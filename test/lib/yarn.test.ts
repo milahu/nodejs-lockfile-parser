@@ -207,7 +207,7 @@ test(`Yarn Tree size exceeds the allowed limit of 500 dependencies (yarn1)`, asy
       `yarn1/yarn.lock`,
     );
     t.fail('Expected TreeSizeLimitError to be thrown');
-  } catch (err) {
+  } catch (err: any) {
     t.equals(err.constructor.name, 'TreeSizeLimitError');
   } finally {
     config.YARN_TREE_SIZE_LIMIT = 6.0e6;
