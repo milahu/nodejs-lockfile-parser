@@ -45,7 +45,7 @@ export class PackageLockParser extends LockParserBase {
           : LockfileType.npm7;
       this.type = packageLock.type;
       return packageLock;
-    } catch (e) {
+    } catch (e: any) {
       throw new InvalidUserInputError(
         'package-lock.json parsing failed with ' + `error ${e.message}`,
       );

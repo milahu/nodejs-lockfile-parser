@@ -46,7 +46,7 @@ export class YarnLockParser extends LockParserBase {
       yarnLock.dependencies = yarnLock.object;
       yarnLock.type = this.type;
       return yarnLock;
-    } catch (e) {
+    } catch (e: any) {
       throw new InvalidUserInputError(
         `yarn.lock parsing failed with an error: ${e.message}`,
       );

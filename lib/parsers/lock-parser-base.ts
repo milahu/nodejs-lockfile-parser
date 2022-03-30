@@ -4,6 +4,8 @@ import * as _toPairs from 'lodash.topairs';
 import * as graphlib from '@snyk/graphlib';
 import { v4 as uuid } from 'uuid';
 import { eventLoopSpinner } from 'event-loop-spinner';
+
+// @ts-ignore
 import * as baseDebug from 'debug';
 
 import {

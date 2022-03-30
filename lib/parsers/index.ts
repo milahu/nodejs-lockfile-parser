@@ -97,7 +97,7 @@ export type Lockfile = PackageLock | YarnLock | Yarn2Lock;
 export function parseManifestFile(manifestFileContents: string): ManifestFile {
   try {
     return JSON.parse(manifestFileContents);
-  } catch (e) {
+  } catch (e: any) {
     throw new InvalidUserInputError(
       'package.json parsing failed with error ' + e.message,
     );
@@ -181,7 +181,7 @@ export function getYarnWorkspaces(targetFile: string): string[] | false {
       return [...(workspacesAlternateConfigPackages || workspacesPackages)];
     }
     return false;
-  } catch (e) {
+  } catch (e: any) {
     throw new InvalidUserInputError(
       'package.json parsing failed with ' + `error ${e.message}`,
     );

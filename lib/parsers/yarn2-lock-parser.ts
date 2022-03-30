@@ -61,7 +61,7 @@ export class Yarn2LockParser extends LockParserBase {
         object: dependencies,
         type: LockfileType.yarn2,
       };
-    } catch (e) {
+    } catch (e: any) {
       throw new InvalidUserInputError(
         `yarn.lock parsing failed with an error: ${e.message}`,
       );
