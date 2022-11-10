@@ -1,0 +1,29 @@
+dependencies:
+  react: 17.0.2
+  test-peer-deps-optional: 1.0.0
+packages:
+  /js-tokens/4.0.0:
+    resolution:
+      integrity: sha1-GSA/tZmR35jjoocFDUZHzerzJJk=
+  /loose-envify/1.4.0:
+    dependencies:
+      js-tokens: 4.0.0
+    resolution:
+      integrity: sha1-ce5R+nvkyuwaY4OffmgtgTLTDK8=
+  /object-assign/4.1.1:
+    resolution:
+      integrity: sha1-IQmtx5ZYh8/AXLvUQsrIv7s2CGM=
+  /react/17.0.2:
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+    resolution:
+      integrity: sha1-0LXMUW0p6z7uOD91tihkz7aAADc=
+  /test-peer-deps-optional/1.0.0:
+    resolution:
+      integrity: sha1-ubdi3rvFLT+2NhkRJsrslQn40vE=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapVersion: 3
+specifiers:
+  react: ^17.0.2
+  test-peer-deps-optional: 1.0.0

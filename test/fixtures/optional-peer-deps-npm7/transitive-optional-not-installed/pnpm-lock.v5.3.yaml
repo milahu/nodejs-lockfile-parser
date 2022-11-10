@@ -1,0 +1,18 @@
+lockfileVersion: 5.3
+
+specifiers:
+  test-peer-deps-optional: 1.0.0
+
+dependencies:
+  test-peer-deps-optional: 1.0.0
+
+packages:
+
+  /test-peer-deps-optional/1.0.0:
+    resolution: {integrity: sha512-mXwLorPrb/ZucRuJC21zkr3JMddhicmn9t4pLDzcYROhP3vKEtxwNGxfJGphCViEtMMOQmSgHc8e/4Q8a9JvSQ==}
+    peerDependencies:
+      react: '*'
+    peerDependenciesMeta:
+      react:
+        optional: true
+    dev: false

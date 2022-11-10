@@ -1,0 +1,10 @@
+dependencies:
+  debug@2.0.x: 2.0.0
+packages:
+  /debug/2.0.0:
+    dependencies:
+      ms: 0.6.2
+    resolution: 89bd9df6732b51256bc6705342bba02ed12131ef
+  /ms/0.6.2: d89c2124c6fdc1353d65a8b77bf1aac4b193708c
+registry: 'https://registry.npmjs.org/'
+version: 2

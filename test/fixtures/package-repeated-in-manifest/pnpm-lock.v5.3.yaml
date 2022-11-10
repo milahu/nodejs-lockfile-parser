@@ -1,0 +1,111 @@
+lockfileVersion: 5.3
+
+specifiers:
+  body-parser: 1.9.0
+  file-type: ^8.1.0
+  undefsafe: ^1.0.0
+
+dependencies:
+  body-parser: 1.9.0
+  file-type: 8.1.0
+
+devDependencies:
+  undefsafe: 1.3.1
+
+packages:
+
+  /body-parser/1.9.0:
+    resolution: {integrity: sha1-ldcpQ7Gk9n9Wu6yeDcyDe2hwNgU=}
+    engines: {node: '>= 0.8'}
+    dependencies:
+      bytes: 1.0.0
+      depd: 1.0.1
+      iconv-lite: 0.4.4
+      media-typer: 0.3.0
+      on-finished: 2.1.0
+      qs: 2.2.4
+      raw-body: 1.3.0
+      type-is: 1.5.7
+    dev: false
+
+  /bytes/1.0.0:
+    resolution: {integrity: sha1-NWnt6Lo0MV+rmcPpLLBMciDeH6g=}
+    dev: false
+
+  /debug/2.6.9:
+    resolution: {integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==}
+    dependencies:
+      ms: 2.0.0
+    dev: true
+
+  /depd/1.0.1:
+    resolution: {integrity: sha1-gK7GTJ1tl+ZcwqnKqTwKpqv3Oqo=}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /ee-first/1.0.5:
+    resolution: {integrity: sha1-jJshKJjYzZ8alDZlDOe+ICyen/A=}
+    dev: false
+
+  /file-type/8.1.0:
+    resolution: {integrity: sha512-qyQ0pzAy78gVoJsmYeNgl8uH8yKhr1lVhW7JbzJmnlRi0I4R2eEDEJZVKG8agpDnLpacwNbDhLNG/LMdxHD2YQ==}
+    engines: {node: '>=6'}
+    dev: false
+
+  /iconv-lite/0.4.4:
+    resolution: {integrity: sha1-6V8uQdsHNfwhZS94J6XuMuY8g6g=}
+    engines: {node: '>=0.8.0'}
+    dev: false
+
+  /media-typer/0.3.0:
+    resolution: {integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /mime-db/1.12.0:
+    resolution: {integrity: sha1-PQxjGA9FjrENMlqqN9fFiuMS6dc=}
+    engines: {node: '>= 0.6'}
+    dev: false
+
+  /mime-types/2.0.14:
+    resolution: {integrity: sha1-MQ4VnbI+B3+Lsit0jav6SVcUCqY=}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      mime-db: 1.12.0
+    dev: false
+
+  /ms/2.0.0:
+    resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
+    dev: true
+
+  /on-finished/2.1.0:
+    resolution: {integrity: sha1-DFOfCSkej/rd4MiiWFD7LO3HAi0=}
+    dependencies:
+      ee-first: 1.0.5
+    dev: false
+
+  /qs/2.2.4:
+    resolution: {integrity: sha1-Lp+800tUDjQhySTs0B6QqpdTGcg=}
+    dev: false
+
+  /raw-body/1.3.0:
+    resolution: {integrity: sha1-l4IwoValVI9C7vFN4i0PT2EAg9E=}
+    engines: {node: '>= 0.8.0'}
+    dependencies:
+      bytes: 1.0.0
+      iconv-lite: 0.4.4
+    dev: false
+
+  /type-is/1.5.7:
+    resolution: {integrity: sha1-uTaKWTzG730GReeLL0xky+zQXpA=}
+    engines: {node: '>= 0.6'}
+    dependencies:
+      media-typer: 0.3.0
+      mime-types: 2.0.14
+    dev: false
+
+  /undefsafe/1.3.1:
+    resolution: {integrity: sha1-FohTEw4V1XpYQqKUvQ8gPx3XNKw=}
+    dependencies:
+      debug: 2.6.9
+    dev: true

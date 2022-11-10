@@ -1,0 +1,98 @@
+dependencies:
+  body-parser@^1.19.0: 1.20.0
+packages:
+  /body-parser/1.20.0:
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.4
+      debug: 2.6.9
+      depd: 2.0.0
+      destroy: 1.2.0
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      on-finished: 2.4.1
+      qs: 6.10.3
+      raw-body: 2.5.1
+      type-is: 1.6.18
+      unpipe: 1.0.0
+    resolution: 3de69bd89011c11573d7bfee6a64f11b6bd27cc5
+  /bytes/3.1.2: 8b0beeb98605adf1b128fa4386403c009e0221a5
+  /call-bind/1.0.2:
+    dependencies:
+      function-bind: 1.1.1
+      get-intrinsic: 1.1.1
+    resolution: b1d4e89e688119c3c9a903ad30abb2f6a919be3c
+  /content-type/1.0.4: e138cc75e040c727b1966fe5e5f8c9aee256fe3b
+  /debug/2.6.9:
+    dependencies:
+      ms: 2.0.0
+    resolution: 5d128515df134ff327e90a4c93f4e077a536341f
+  /depd/2.0.0: b696163cc757560d09cf22cc8fad1571b79e76df
+  /destroy/1.2.0: 4803735509ad8be552934c67df614f94e66fa015
+  /ee-first/1.1.1: 590c61156b0ae2f4f0255732a158b266bc56b21d
+  /function-bind/1.1.1: a56899d3ea3c9bab874bb9773b7c5ede92f4895d
+  /get-intrinsic/1.1.1:
+    dependencies:
+      function-bind: 1.1.1
+      has: 1.0.3
+      has-symbols: 1.0.3
+    resolution: 15f59f376f855c446963948f0d24cd3637b4abc6
+  /has-symbols/1.0.3: bb7b2c4349251dce87b125f7bdf874aa7c8b39f8
+  /has/1.0.3:
+    dependencies:
+      function-bind: 1.1.1
+    resolution: 722d7cbfc1f6aa8241f16dd814e011e1f41e8796
+  /http-errors/2.0.0:
+    dependencies:
+      depd: 2.0.0
+      inherits: 2.0.4
+      setprototypeof: 1.2.0
+      statuses: 2.0.1
+      toidentifier: 1.0.1
+    resolution: b7774a1486ef73cf7667ac9ae0858c012c57b9d3
+  /iconv-lite/0.4.24:
+    dependencies:
+      safer-buffer: 2.1.2
+    resolution: 2022b4b25fbddc21d2f524974a474aafe733908b
+  /inherits/2.0.4: 0fa2c64f932917c3433a0ded55363aae37416b7c
+  /media-typer/0.3.0: 8710d7af0aa626f8fffa1ce00168545263255748
+  /mime-db/1.52.0: bbabcdc02859f4987301c856e3387ce5ec43bf70
+  /mime-types/2.1.35:
+    dependencies:
+      mime-db: 1.52.0
+    resolution: 381a871b62a734450660ae3deee44813f70d959a
+  /ms/2.0.0: 5608aeadfc00be6c2901df5f9861788de0d597c8
+  /object-inspect/1.12.0: 6e2c120e868fd1fd18cb4f18c31741d0d6e776f0
+  /on-finished/2.4.1:
+    dependencies:
+      ee-first: 1.1.1
+    resolution: 58c8c44116e54845ad57f14ab10b03533184ac3f
+  /qs/6.10.3:
+    dependencies:
+      side-channel: 1.0.4
+    resolution: d6cde1b2ffca87b5aa57889816c5f81535e22e8e
+  /raw-body/2.5.1:
+    dependencies:
+      bytes: 3.1.2
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+    resolution: fe1b1628b181b700215e5fd42389f98b71392857
+  /safer-buffer/2.1.2: 44fa161b0187b9549dd84bb91802f9bd8385cd6a
+  /setprototypeof/1.2.0: 66c9a24a73f9fc28cbe66b09fed3d33dcaf1b424
+  /side-channel/1.0.4:
+    dependencies:
+      call-bind: 1.0.2
+      get-intrinsic: 1.1.1
+      object-inspect: 1.12.0
+    resolution: efce5c8fdc104ee751b25c58d4290011fa5ea2cf
+  /statuses/2.0.1: 55cb000ccf1d48728bd23c685a063998cf1a1b63
+  /toidentifier/1.0.1: 3be34321a88a820ed1bd80dfaa33e479fbb8dd35
+  /type-is/1.6.18:
+    dependencies:
+      media-typer: 0.3.0
+      mime-types: 2.1.35
+    resolution: 4e552cd05df09467dcbc4ef739de89f2cf37c131
+  /unpipe/1.0.0: b2bf4ee8514aae6165b4817829d21b2ef49904ec
+registry: 'https://registry.npmjs.org/'
+version: 2

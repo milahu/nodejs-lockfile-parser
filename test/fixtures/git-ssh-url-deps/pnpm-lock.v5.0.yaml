@@ -1,0 +1,91 @@
+dependencies:
+  body-parser: github.com/expressjs/body-parser/263f602e6ae34add6332c1eb4caa808893b0b711
+lockfileVersion: 5
+packages:
+  /bytes/1.0.0:
+    dev: false
+    resolution:
+      integrity: sha1-NWnt6Lo0MV+rmcPpLLBMciDeH6g=
+  /depd/1.0.1:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-gK7GTJ1tl+ZcwqnKqTwKpqv3Oqo=
+  /ee-first/1.0.5:
+    dev: false
+    resolution:
+      integrity: sha1-jJshKJjYzZ8alDZlDOe+ICyen/A=
+  /iconv-lite/0.4.4:
+    dev: false
+    engines:
+      node: '>=0.8.0'
+    resolution:
+      integrity: sha1-6V8uQdsHNfwhZS94J6XuMuY8g6g=
+  /media-typer/0.3.0:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
+  /mime-db/1.12.0:
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-PQxjGA9FjrENMlqqN9fFiuMS6dc=
+  /mime-types/2.0.14:
+    dependencies:
+      mime-db: 1.12.0
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-MQ4VnbI+B3+Lsit0jav6SVcUCqY=
+  /on-finished/2.1.0:
+    dependencies:
+      ee-first: 1.0.5
+    dev: false
+    resolution:
+      integrity: sha1-DFOfCSkej/rd4MiiWFD7LO3HAi0=
+  /qs/2.2.4:
+    dev: false
+    resolution:
+      integrity: sha1-Lp+800tUDjQhySTs0B6QqpdTGcg=
+  /raw-body/1.3.0:
+    dependencies:
+      bytes: 1.0.0
+      iconv-lite: 0.4.4
+    dev: false
+    engines:
+      node: '>= 0.8.0'
+    resolution:
+      integrity: sha1-l4IwoValVI9C7vFN4i0PT2EAg9E=
+  /type-is/1.5.7:
+    dependencies:
+      media-typer: 0.3.0
+      mime-types: 2.0.14
+    dev: false
+    engines:
+      node: '>= 0.6'
+    resolution:
+      integrity: sha1-uTaKWTzG730GReeLL0xky+zQXpA=
+  github.com/expressjs/body-parser/263f602e6ae34add6332c1eb4caa808893b0b711:
+    dependencies:
+      bytes: 1.0.0
+      depd: 1.0.1
+      iconv-lite: 0.4.4
+      media-typer: 0.3.0
+      on-finished: 2.1.0
+      qs: 2.2.4
+      raw-body: 1.3.0
+      type-is: 1.5.7
+    dev: false
+    engines:
+      node: '>= 0.8'
+    name: body-parser
+    resolution:
+      tarball: 'https://codeload.github.com/expressjs/body-parser/tar.gz/263f602e6ae34add6332c1eb4caa808893b0b711'
+    version: 1.9.0
+specifiers:
+  body-parser: 'git+ssh://git@github.com/expressjs/body-parser.git#1.9.0'

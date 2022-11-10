@@ -1,0 +1,5 @@
+dependencies:
+  cyclic-dep-self-reference-2: 'link:cyclic-dep-self-reference-2'
+lockfileVersion: 5
+specifiers:
+  cyclic-dep-self-reference-2: 'file:./cyclic-dep-self-reference-2'

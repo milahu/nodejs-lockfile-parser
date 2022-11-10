@@ -1,0 +1,15 @@
+dependencies:
+  'cyclic-dep-self-reference-2@file:./cyclic-dep-self-reference-2': local/%2Fhome%2Fuser%2Fsrc%2Fjavascript%2Fnodejs-lockfile-parser%2Fnodejs-lockfile-parser%2Ftest%2Ffixtures%2Fcyclic-dep-self-reference%2Fcyclic-dep-self-reference-2
+packages:
+  local/%2Fhome%2Fuser%2Fsrc%2Fjavascript%2Fnodejs-lockfile-parser%2Fnodejs-lockfile-parser%2Ftest%2Ffixtures%2Fcyclic-dep-self-reference:
+    resolution:
+      root: /home/user/src/javascript/nodejs-lockfile-parser/nodejs-lockfile-parser/test/fixtures/cyclic-dep-self-reference
+      type: directory
+  local/%2Fhome%2Fuser%2Fsrc%2Fjavascript%2Fnodejs-lockfile-parser%2Fnodejs-lockfile-parser%2Ftest%2Ffixtures%2Fcyclic-dep-self-reference%2Fcyclic-dep-self-reference-2:
+    dependencies:
+      cyclic-dep-self-reference: local/%2Fhome%2Fuser%2Fsrc%2Fjavascript%2Fnodejs-lockfile-parser%2Fnodejs-lockfile-parser%2Ftest%2Ffixtures%2Fcyclic-dep-self-reference
+    resolution:
+      root: /home/user/src/javascript/nodejs-lockfile-parser/nodejs-lockfile-parser/test/fixtures/cyclic-dep-self-reference/cyclic-dep-self-reference-2
+      type: directory
+registry: 'https://registry.npmjs.org/'
+version: 2

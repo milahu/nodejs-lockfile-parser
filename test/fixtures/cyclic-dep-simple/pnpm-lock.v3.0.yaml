@@ -1,0 +1,15 @@
+dependencies:
+  debug: 2.0.0
+packages:
+  /debug/2.0.0:
+    dependencies:
+      ms: 0.6.2
+    resolution:
+      integrity: sha1-ib2d9nMrUSVrxnBTQrugLtEhMe8=
+  /ms/0.6.2:
+    resolution:
+      integrity: sha1-2JwhJMb9wTU9Zai3e/GqxLGTcIw=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapVersion: 3
+specifiers:
+  debug: 2.0.x

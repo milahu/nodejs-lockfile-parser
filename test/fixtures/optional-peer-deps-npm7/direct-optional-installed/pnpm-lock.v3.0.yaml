@@ -1,0 +1,147 @@
+dependencies:
+  body-parser: 1.20.0
+packages:
+  /body-parser/1.20.0:
+    dependencies:
+      bytes: 3.1.2
+      content-type: 1.0.4
+      debug: 2.6.9
+      depd: 2.0.0
+      destroy: 1.2.0
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      on-finished: 2.4.1
+      qs: 6.10.3
+      raw-body: 2.5.1
+      type-is: 1.6.18
+      unpipe: 1.0.0
+    resolution:
+      integrity: sha1-Peab2JARwRVz17/uamTxG2vSfMU=
+  /bytes/3.1.2:
+    resolution:
+      integrity: sha1-iwvuuYYFrfGxKPpDhkA8AJ4CIaU=
+  /call-bind/1.0.2:
+    dependencies:
+      function-bind: 1.1.1
+      get-intrinsic: 1.1.1
+    resolution:
+      integrity: sha1-sdTonmiBGcPJqQOtMKuy9qkZvjw=
+  /content-type/1.0.4:
+    resolution:
+      integrity: sha1-4TjMdeBAxyexlm/l5fjJruJW/js=
+  /debug/2.6.9:
+    dependencies:
+      ms: 2.0.0
+    resolution:
+      integrity: sha1-XRKFFd8TT/Mn6QpMk/Tgd6U2NB8=
+  /depd/2.0.0:
+    resolution:
+      integrity: sha1-tpYWPMdXVg0JzyLMj60Vcbeedt8=
+  /destroy/1.2.0:
+    resolution:
+      integrity: sha1-SANzVQmti+VSk0xn32FPlOZvoBU=
+  /ee-first/1.1.1:
+    resolution:
+      integrity: sha1-WQxhFWsK4vTwJVcyoViyZrxWsh0=
+  /function-bind/1.1.1:
+    resolution:
+      integrity: sha1-pWiZ0+o8m6uHS7l3O3xe3pL0iV0=
+  /get-intrinsic/1.1.1:
+    dependencies:
+      function-bind: 1.1.1
+      has: 1.0.3
+      has-symbols: 1.0.3
+    resolution:
+      integrity: sha1-FfWfN2+FXERpY5SPDSTNNje0q8Y=
+  /has-symbols/1.0.3:
+    resolution:
+      integrity: sha1-u3ssQ0klHc6HsSX3vfh0qnyLOfg=
+  /has/1.0.3:
+    dependencies:
+      function-bind: 1.1.1
+    resolution:
+      integrity: sha1-ci18v8H2qoJB8W3YFOAR4fQeh5Y=
+  /http-errors/2.0.0:
+    dependencies:
+      depd: 2.0.0
+      inherits: 2.0.4
+      setprototypeof: 1.2.0
+      statuses: 2.0.1
+      toidentifier: 1.0.1
+    resolution:
+      integrity: sha1-t3dKFIbvc892Z6ya4IWMASxXudM=
+  /iconv-lite/0.4.24:
+    dependencies:
+      safer-buffer: 2.1.2
+    resolution:
+      integrity: sha1-ICK0sl+93CHS9SSXSkdKr+czkIs=
+  /inherits/2.0.4:
+    resolution:
+      integrity: sha1-D6LGT5MpF8NDOg3tVTY6rjdBa3w=
+  /media-typer/0.3.0:
+    resolution:
+      integrity: sha1-hxDXrwqmJvj/+hzgAWhUUmMlV0g=
+  /mime-db/1.52.0:
+    resolution:
+      integrity: sha1-u6vNwChZ9JhzAchW4zh85exDv3A=
+  /mime-types/2.1.35:
+    dependencies:
+      mime-db: 1.52.0
+    resolution:
+      integrity: sha1-OBqHG2KnNEUGYK497uRIE/cNlZo=
+  /ms/2.0.0:
+    resolution:
+      integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
+  /object-inspect/1.12.0:
+    resolution:
+      integrity: sha1-biwSDoaP0f0Yy08YwxdB0NbndvA=
+  /on-finished/2.4.1:
+    dependencies:
+      ee-first: 1.1.1
+    resolution:
+      integrity: sha1-WMjEQRblSEWtV/FKsQsDUzGErD8=
+  /qs/6.10.3:
+    dependencies:
+      side-channel: 1.0.4
+    resolution:
+      integrity: sha1-1s3hsv/Kh7WqV4iYFsX4FTXiLo4=
+  /raw-body/2.5.1:
+    dependencies:
+      bytes: 3.1.2
+      http-errors: 2.0.0
+      iconv-lite: 0.4.24
+      unpipe: 1.0.0
+    resolution:
+      integrity: sha1-/hsWKLGBtwAhXl/UI4n5i3E5KFc=
+  /safer-buffer/2.1.2:
+    resolution:
+      integrity: sha1-RPoWGwGHuVSd2Eu5GAL5vYOFzWo=
+  /setprototypeof/1.2.0:
+    resolution:
+      integrity: sha1-ZsmiSnP5/CjL5msJ/tPTPcrxtCQ=
+  /side-channel/1.0.4:
+    dependencies:
+      call-bind: 1.0.2
+      get-intrinsic: 1.1.1
+      object-inspect: 1.12.0
+    resolution:
+      integrity: sha1-785cj9wQTudRslxY1CkAEfpeos8=
+  /statuses/2.0.1:
+    resolution:
+      integrity: sha1-VcsADM8dSHKL0jxoWgY5mM8aG2M=
+  /toidentifier/1.0.1:
+    resolution:
+      integrity: sha1-O+NDIaiKgg7RvYDfqjPkefu43TU=
+  /type-is/1.6.18:
+    dependencies:
+      media-typer: 0.3.0
+      mime-types: 2.1.35
+    resolution:
+      integrity: sha1-TlUs0F3wlGfcvE73Od6J8s83wTE=
+  /unpipe/1.0.0:
+    resolution:
+      integrity: sha1-sr9O6FFKrmFltIF4KdIbLvSZBOw=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapVersion: 3
+specifiers:
+  body-parser: ^1.19.0

@@ -1,0 +1,7 @@
+dependencies:
+  cyclic-dep-self-reference-2: 'link:cyclic-dep-self-reference-2'
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 7
+shrinkwrapVersion: 3
+specifiers:
+  cyclic-dep-self-reference-2: 'file:./cyclic-dep-self-reference-2'

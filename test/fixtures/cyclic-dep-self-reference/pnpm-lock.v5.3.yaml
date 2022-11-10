@@ -1,0 +1,7 @@
+lockfileVersion: 5.3
+
+specifiers:
+  cyclic-dep-self-reference-2: file:./cyclic-dep-self-reference-2
+
+dependencies:
+  cyclic-dep-self-reference-2: link:cyclic-dep-self-reference-2

@@ -1,0 +1,10 @@
+dependencies:
+  test-peer-deps-optional: 1.0.0
+packages:
+  /test-peer-deps-optional/1.0.0:
+    resolution:
+      integrity: sha1-ubdi3rvFLT+2NhkRJsrslQn40vE=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapVersion: 3
+specifiers:
+  test-peer-deps-optional: 1.0.0

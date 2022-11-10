@@ -1,0 +1,29 @@
+dependencies:
+  adm-zip: 0.4.7
+optionalDependencies:
+  debug: 2.6.9
+packages:
+  /adm-zip/0.4.7:
+    dev: false
+    engines:
+      node: '>=0.3.0'
+    resolution:
+      integrity: sha1-hgbCy/HEJs6MjsABdER/1Jtur8E=
+  /debug/2.6.9:
+    dependencies:
+      ms: 2.0.0
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha512-bC7ElrdJaJnPbAP+1EotYvqZsb3ecl5wi6Bfi6BJTUcNowp6cvspg0jXznRTKDjm/E7AdgFBVeAPVMNcKGsHMA==
+  /ms/2.0.0:
+    dev: false
+    optional: true
+    resolution:
+      integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=
+registry: 'https://registry.npmjs.org/'
+shrinkwrapMinorVersion: 9
+shrinkwrapVersion: 3
+specifiers:
+  adm-zip: 0.4.7
+  debug: ^2.2.0

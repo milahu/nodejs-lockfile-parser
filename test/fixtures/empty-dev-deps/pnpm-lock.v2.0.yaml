@@ -1,0 +1,6 @@
+dependencies:
+  adm-zip@0.4.7: 0.4.7
+packages:
+  /adm-zip/0.4.7: 8606c2cbf1c426ce8c8ec00174447fd49b6eafc1
+registry: 'https://registry.npmjs.org/'
+version: 2

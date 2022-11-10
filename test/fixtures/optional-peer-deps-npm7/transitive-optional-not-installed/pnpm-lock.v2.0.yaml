@@ -1,0 +1,6 @@
+dependencies:
+  test-peer-deps-optional@1.0.0: 1.0.0
+packages:
+  /test-peer-deps-optional/1.0.0: b9b762debbc52d3fb636191126caec9509f8d2f1
+registry: 'https://registry.npmjs.org/'
+version: 2
