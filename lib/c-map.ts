@@ -1,4 +1,4 @@
-import * as pMap from 'p-map';
+import pMap from 'p-map';
 import { eventLoopSpinner } from 'event-loop-spinner';
 
 /** Run a function each element in an array, with some level of concurrency.

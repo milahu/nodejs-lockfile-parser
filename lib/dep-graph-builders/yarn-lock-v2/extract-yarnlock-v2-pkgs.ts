@@ -1,5 +1,5 @@
 import { load, FAILSAFE_SCHEMA } from 'js-yaml';
-import * as yarnCore from '@yarnpkg/core';
+import yarnCore from '@yarnpkg/core';
 import { yarnLockFileKeyNormalizer } from './utils.js';
 import { NormalisedPkgs } from '../types.js';
 

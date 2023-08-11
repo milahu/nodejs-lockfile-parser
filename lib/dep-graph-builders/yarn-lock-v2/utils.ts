@@ -1,5 +1,5 @@
 import { structUtils } from '@yarnpkg/core';
-import * as _flatMap from 'lodash.flatmap';
+import _flatMap from 'lodash.flatmap';
 import { OutOfSyncError } from '../../errors/index.js';
 import { LockfileType } from '../../parsers/index.js';
 import { NormalisedPkgs } from '../types.js';

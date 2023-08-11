@@ -1,10 +1,10 @@
-import * as _cloneDeep from 'lodash.clonedeep';
-import * as _isEmpty from 'lodash.isempty';
-import * as _toPairs from 'lodash.topairs';
-import * as graphlib from '@snyk/graphlib';
+import _cloneDeep from 'lodash.clonedeep';
+import _isEmpty from 'lodash.isempty';
+import _toPairs from 'lodash.topairs';
+import graphlib from '@snyk/graphlib';
 import { v4 as uuid } from 'uuid';
 import { eventLoopSpinner } from 'event-loop-spinner';
-import * as baseDebug from 'debug';
+import baseDebug from 'debug';
 import { extractNameAndIdentifier } from '../cli-parsers/cli-parser-utils.js';
 
 import {
