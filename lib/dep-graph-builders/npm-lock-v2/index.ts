@@ -19,7 +19,7 @@ import { LockfileType } from '../../parsers/index.js';
 
 import * as semver from 'semver';
 import * as micromatch from 'micromatch';
-import * as pathUtil from 'path';
+import pathUtil from 'path';
 import { eventLoopSpinner } from 'event-loop-spinner';
 
 export { extractPkgsFromNpmLockV2 };

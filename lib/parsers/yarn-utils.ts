@@ -1,5 +1,5 @@
 import { structUtils } from '@yarnpkg/core';
-import * as _flatMap from 'lodash.flatmap';
+import _flatMap from 'lodash.flatmap';
 
 const BUILTIN_PLACEHOLDER = 'builtin';
 const MULTIPLE_KEYS_REGEXP = / *, */g;
