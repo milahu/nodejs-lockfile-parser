@@ -4,9 +4,9 @@ import {
   getChildNode,
   getTopLevelDeps,
   PkgNode,
-} from '../util';
-import type { NormalisedPkgs, PackageJsonBase } from '../types';
-import type { DepGraphBuildOptions } from '../types';
+} from '../util.js';
+import type { NormalisedPkgs, PackageJsonBase } from '../types.js';
+import type { DepGraphBuildOptions } from '../types.js';
 import { eventLoopSpinner } from 'event-loop-spinner';
 
 enum Color {

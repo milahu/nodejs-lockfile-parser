@@ -1,7 +1,7 @@
 import { load, FAILSAFE_SCHEMA } from 'js-yaml';
 import * as yarnCore from '@yarnpkg/core';
 
-import { LockParserBase, DepMap } from './lock-parser-base';
+import { LockParserBase, DepMap } from './lock-parser-base.js';
 import {
   Dep,
   Lockfile,
@@ -10,10 +10,10 @@ import {
   ManifestFile,
   PkgTree,
   Scope,
-} from '.';
-import { config } from '../config';
-import { InvalidUserInputError } from '../errors';
-import { yarnLockFileKeyNormalizer } from './yarn-utils';
+} from './index.js';
+import { config } from '../config.js';
+import { InvalidUserInputError } from '../errors/index.js';
+import { yarnLockFileKeyNormalizer } from './yarn-utils.js';
 
 export interface Yarn2Lock {
   type: string;

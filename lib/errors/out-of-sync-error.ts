@@ -1,4 +1,4 @@
-import { LockfileType } from '../parsers';
+import { LockfileType } from '../parsers/index.js';
 
 export const LOCK_FILE_NAME = {
   npm: 'package-lock.json',

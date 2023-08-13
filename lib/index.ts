@@ -18,8 +18,8 @@ import {
   UnsupportedRuntimeError,
   InvalidUserInputError,
   OutOfSyncError,
-} from './errors';
-import { buildDepGraphFromCliOutput } from './cli-parsers';
+} from './errors/index.js';
+import { buildDepGraphFromCliOutput } from './cli-parsers/index.js';
 
 export {
   buildDepTree,
@@ -61,14 +61,14 @@ import type {
   NormalisedPkgs,
   ProjectParseOptions,
   YarnLockV2ProjectParseOptions,
-} from './dep-graph-builders/types';
+} from './dep-graph-builders/types.js';
 import {
   getLockfileVersionFromFile,
   getNpmLockfileVersion,
   getYarnLockfileVersion,
   getPnpmLockfileVersion,
   NodeLockfileVersion,
-} from './utils';
+} from './utils.js';
 export {
   parseNpmLockV2Project,
   extractPkgsFromYarnLockV1,

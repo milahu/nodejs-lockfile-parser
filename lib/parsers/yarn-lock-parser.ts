@@ -7,10 +7,10 @@ import {
   ManifestFile,
   PkgTree,
   Scope,
-} from './index';
-import { InvalidUserInputError } from '../errors';
-import { DepMap, LockParserBase } from './lock-parser-base';
-import { config } from '../config';
+} from './index.js';
+import { InvalidUserInputError } from '../errors/index.js';
+import { DepMap, LockParserBase } from './lock-parser-base.js';
+import { config } from '../config.js';
 
 export type YarnLockFileTypes = LockfileType.yarn | LockfileType.yarn2;
 
