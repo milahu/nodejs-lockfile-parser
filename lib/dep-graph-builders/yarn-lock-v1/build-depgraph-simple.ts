@@ -1,7 +1,7 @@
 import { DepGraphBuilder } from '@snyk/dep-graph';
-import { getChildNode, getTopLevelDeps, PkgNode } from '../util';
-import type { Yarn1DepGraphBuildOptions } from '../types';
-import type { NormalisedPkgs, PackageJsonBase } from '../types';
+import { getChildNode, getTopLevelDeps, PkgNode } from '../util.js';
+import type { Yarn1DepGraphBuildOptions } from '../types.js';
+import type { NormalisedPkgs, PackageJsonBase } from '../types.js';
 import { eventLoopSpinner } from 'event-loop-spinner';
 
 export const buildDepGraphYarnLockV1Simple = async (

@@ -2,7 +2,7 @@ import {
   FlatDependenciesMap,
   FormattedCliOutput,
   YarnInfoOutput,
-} from './cli-parser-types';
+} from './cli-parser-types.js';
 
 export const parseYarnInfoOutput = (
   rawYarnInfoOutput: string,

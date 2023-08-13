@@ -1,7 +1,7 @@
-import { OutOfSyncError } from '../../errors';
-import { LockfileType } from '../../parsers';
-import { NormalisedPkgs } from '../types';
-import { getChildNode, PkgNode } from '../util';
+import { OutOfSyncError } from '../../errors/index.js';
+import { LockfileType } from '../../parsers/index.js';
+import { NormalisedPkgs } from '../types.js';
+import { getChildNode, PkgNode } from '../util.js';
 
 export const getChildNodeYarnLockV1Workspace = (
   name: string,

@@ -2,8 +2,8 @@ import {
   FlatDependenciesMap,
   FormattedCliOutput,
   YarnListTree,
-} from './cli-parser-types';
-import { extractCorrectIdentifierBySemver } from './cli-parser-utils';
+} from './cli-parser-types.js';
+import { extractCorrectIdentifierBySemver } from './cli-parser-utils.js';
 
 export const parseYarnListOutput = (
   rawYarnListOutput: string,

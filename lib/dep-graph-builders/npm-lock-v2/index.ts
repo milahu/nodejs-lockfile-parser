@@ -3,9 +3,9 @@ import {
   Overrides,
   PackageJsonBase,
   ProjectParseOptions,
-} from '../types';
-import { extractPkgsFromNpmLockV2 } from './extract-npm-lock-v2-pkgs';
-import type { NpmLockPkg } from './extract-npm-lock-v2-pkgs';
+} from '../types.js';
+import { extractPkgsFromNpmLockV2 } from './extract-npm-lock-v2-pkgs.js';
+import type { NpmLockPkg } from './extract-npm-lock-v2-pkgs.js';
 import { DepGraph, DepGraphBuilder } from '@snyk/dep-graph';
 import {
   addPkgNodeToGraph,
@@ -13,9 +13,9 @@ import {
   getTopLevelDeps,
   parsePkgJson,
   PkgNode,
-} from '../util';
-import { OutOfSyncError } from '../../errors';
-import { LockfileType } from '../../parsers';
+} from '../util.js';
+import { OutOfSyncError } from '../../errors/index.js';
+import { LockfileType } from '../../parsers/index.js';
 
 import * as semver from 'semver';
 import * as micromatch from 'micromatch';

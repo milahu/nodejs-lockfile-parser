@@ -5,7 +5,7 @@ import * as graphlib from '@snyk/graphlib';
 import { v4 as uuid } from 'uuid';
 import { eventLoopSpinner } from 'event-loop-spinner';
 import * as baseDebug from 'debug';
-import { extractNameAndIdentifier } from '../cli-parsers/cli-parser-utils';
+import { extractNameAndIdentifier } from '../cli-parsers/cli-parser-utils.js';
 
 import {
   createDepTreeDepFromDep,
@@ -19,12 +19,12 @@ import {
   ManifestFile,
   PkgTree,
   Scope,
-} from './';
+} from './index.js';
 import {
   InvalidUserInputError,
   OutOfSyncError,
   TreeSizeLimitError,
-} from '../errors';
+} from '../errors/index.js';
 
 const debug = baseDebug('snyk-nodejs-parser');
 

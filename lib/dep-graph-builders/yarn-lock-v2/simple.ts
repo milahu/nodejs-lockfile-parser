@@ -1,11 +1,11 @@
-import { extractPkgsFromYarnLockV2 } from './extract-yarnlock-v2-pkgs';
-import { parsePkgJson } from '../util';
+import { extractPkgsFromYarnLockV2 } from './extract-yarnlock-v2-pkgs.js';
+import { parsePkgJson } from '../util.js';
 import {
   PackageJsonBase,
   YarnLockV2ProjectParseOptions,
   YarnLockV2WorkspaceArgs,
-} from '../types';
-import { buildDepGraphYarnLockV2Simple } from './build-depgraph-simple';
+} from '../types.js';
+import { buildDepGraphYarnLockV2Simple } from './build-depgraph-simple.js';
 import { DepGraph } from '@snyk/dep-graph';
 
 export const parseYarnLockV2Project = async (

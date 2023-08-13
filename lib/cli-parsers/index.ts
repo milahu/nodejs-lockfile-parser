@@ -1,10 +1,10 @@
 import { DepGraph, DepGraphBuilder } from '@snyk/dep-graph';
-import { getYarnLockfileType } from '..';
-import { LockfileType } from '../parsers';
-import { FormattedCliOutput } from './cli-parser-types';
-import { extractNameAndIdentifier } from './cli-parser-utils';
-import { parseYarnInfoOutput } from './yarn-info-parser';
-import { parseYarnListOutput } from './yarn-list-parser';
+import { getYarnLockfileType } from '../index.js';
+import { LockfileType } from '../parsers/index.js';
+import { FormattedCliOutput } from './cli-parser-types.js';
+import { extractNameAndIdentifier } from './cli-parser-utils.js';
+import { parseYarnInfoOutput } from './yarn-info-parser.js';
+import { parseYarnListOutput } from './yarn-list-parser.js';
 
 export const buildDepGraphFromCliOutput = (
   rawCliOutput: string,

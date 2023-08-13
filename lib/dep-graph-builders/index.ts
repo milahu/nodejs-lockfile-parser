@@ -6,7 +6,7 @@ import {
   buildDepGraphYarnLockV1WorkspaceCyclesPruned,
   buildDepGraphYarnLockV1Workspace,
   extractPkgsFromYarnLockV1,
-} from './yarn-lock-v1';
+} from './yarn-lock-v1/index.js';
 import {
   buildDepGraphYarnLockV2Simple,
   parseYarnLockV2Project,

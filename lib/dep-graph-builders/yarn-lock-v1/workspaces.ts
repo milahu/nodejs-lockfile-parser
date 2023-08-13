@@ -1,11 +1,11 @@
 import { DepGraph } from '@snyk/dep-graph';
-import { PackageJsonBase } from '../types';
-import { buildDepGraphYarnLockV1WorkspaceCyclesPruned } from './build-depgraph-workspace-package-pruned';
-import { buildDepGraphYarnLockV1Workspace } from './build-depgraph-workspace-package';
-import { extractPkgsFromYarnLockV1 } from './extract-yarnlock-v1-pkgs';
-import { parsePkgJson } from '../util';
-import { ProjectParseOptions } from '../types';
-import { cMap } from '../../c-map';
+import { PackageJsonBase } from '../types.js';
+import { buildDepGraphYarnLockV1WorkspaceCyclesPruned } from './build-depgraph-workspace-package-pruned.js';
+import { buildDepGraphYarnLockV1Workspace } from './build-depgraph-workspace-package.js';
+import { extractPkgsFromYarnLockV1 } from './extract-yarnlock-v1-pkgs.js';
+import { parsePkgJson } from '../util.js';
+import { ProjectParseOptions } from '../types.js';
+import { cMap } from '../../c-map.js';
 
 export const parseYarnLockV1WorkspaceProject = async (
   yarnLockContent: string,

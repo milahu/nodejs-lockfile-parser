@@ -1,9 +1,9 @@
-import { PackageJsonBase } from './types';
+import { PackageJsonBase } from './types.js';
 import { DepGraphBuilder } from '@snyk/dep-graph';
-import { InvalidUserInputError } from '../errors';
-import { NormalisedPkgs } from './types';
-import { OutOfSyncError } from '../errors';
-import { LockfileType } from '../parsers';
+import { InvalidUserInputError } from '../errors/index.js';
+import { NormalisedPkgs } from './types.js';
+import { OutOfSyncError } from '../errors/index.js';
+import { LockfileType } from '../parsers/index.js';
 
 export type Dependencies = Record<string, { version: string; isDev: boolean }>;
 
