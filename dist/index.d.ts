@@ -1,0 +1,12 @@
+import { ManifestFile, PkgTree, Scope, LockfileType, getYarnWorkspaces } from './parsers/index.js';
+import { UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError } from './errors/index.js';
+import { buildDepGraphFromCliOutput } from './cli-parsers/index.js';
+export { buildDepTree, buildDepTreeFromFiles, buildDepGraphFromCliOutput, getYarnWorkspacesFromFiles, getYarnWorkspaces, PkgTree, Scope, LockfileType, UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError, ManifestFile, };
+import { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple } from './dep-graph-builders/index.js';
+import type { PackageJsonBase, NormalisedPkgs, ProjectParseOptions, YarnLockV2ProjectParseOptions } from './dep-graph-builders/types.js';
+import { getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, NodeLockfileVersion } from './utils.js';
+export { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, PackageJsonBase, ProjectParseOptions, YarnLockV2ProjectParseOptions, NormalisedPkgs, NormalisedPkgs as YarnLockPackages, getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, NodeLockfileVersion, };
+declare function buildDepTree(manifestFileContents: string, lockFileContents: string, includeDev?: boolean, lockfileType?: LockfileType, strictOutOfSync?: boolean, defaultManifestFileName?: string): Promise<PkgTree>;
+declare function buildDepTreeFromFiles(root: string, manifestFilePath: string, lockFilePath: string, includeDev?: boolean, strictOutOfSync?: boolean): Promise<PkgTree>;
+declare function getYarnWorkspacesFromFiles(root: any, manifestFilePath: string): string[] | false;
+export declare function getYarnLockfileType(lockFileContents: string, root?: string, lockFilePath?: string): LockfileType;
