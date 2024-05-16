@@ -1,6 +1,6 @@
-import { PnpmWorkspaceArgs } from '../../types';
-import { ParsedDepPath, PnpmDeps, PnpmImporters } from '../types';
-import { PnpmLockfileParser } from './lockfile-parser';
+import { PnpmWorkspaceArgs } from '../../types.js';
+import { ParsedDepPath, PnpmDeps, PnpmImporters } from '../types.js';
+import { PnpmLockfileParser } from './lockfile-parser.js';
 
 export class LockfileV6Parser extends PnpmLockfileParser {
   public settings;

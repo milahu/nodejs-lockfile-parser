@@ -1,6 +1,6 @@
 import { readFileSync } from 'fs';
 import { load, FAILSAFE_SCHEMA } from 'js-yaml';
-import { InvalidUserInputError } from './errors';
+import { InvalidUserInputError } from './errors/index.js';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 
 export enum NodeLockfileVersion {

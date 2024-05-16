@@ -1,5 +1,5 @@
-import { PkgIdentifier } from '../types';
-import { Dependencies } from '../util';
+import { PkgIdentifier } from '../types.js';
+import { Dependencies } from '../util.js';
 
 export type PnpmDepPath = string;
 export type PnpmLockPkg = {

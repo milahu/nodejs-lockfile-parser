@@ -1,14 +1,14 @@
-import { parsePkgJson } from '../util';
+import { parsePkgJson } from '../util.js';
 import {
   PackageJsonBase,
   PnpmProjectParseOptions,
   PnpmWorkspaceArgs,
-} from '../types';
-import { buildDepGraphPnpm } from './build-dep-graph-pnpm';
+} from '../types.js';
+import { buildDepGraphPnpm } from './build-dep-graph-pnpm.js';
 import { DepGraph } from '@snyk/dep-graph';
-import { getPnpmLockfileParser } from './lockfile-parser/index';
-import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser';
-import { NodeLockfileVersion } from '../../utils';
+import { getPnpmLockfileParser } from './lockfile-parser/index.js';
+import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
+import { NodeLockfileVersion } from '../../utils.js';
 
 export const parsePnpmProject = async (
   pkgJsonContent: string,
