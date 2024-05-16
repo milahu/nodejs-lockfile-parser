@@ -1,4 +1,5 @@
 import { InvalidUserInputError } from '../errors/index.js';
+import { load, FAILSAFE_SCHEMA } from 'js-yaml';
 export var Scope;
 (function (Scope) {
     Scope["prod"] = "prod";
@@ -10,6 +11,7 @@ export var LockfileType;
     LockfileType["npm7"] = "npm7";
     LockfileType["yarn"] = "yarn";
     LockfileType["yarn2"] = "yarn2";
+    LockfileType["pnpm"] = "pnpm";
 })(LockfileType = LockfileType || (LockfileType = {}));
 export function parseManifestFile(manifestFileContents) {
     try {
@@ -74,6 +76,25 @@ export function getYarnWorkspaces(targetFile) {
             }
         }
         return false;
+    }
+    catch (e) {
+        throw new InvalidUserInputError('package.json parsing failed with ' + `error ${e.message}`);
+    }
+}
+export function getPnpmWorkspaces(workspacesYamlFile) {
+    try {
+        const rawPnpmWorkspacesYaml = load(workspacesYamlFile, {
+            json: true,
+            schema: FAILSAFE_SCHEMA,
+        });
+        if (rawPnpmWorkspacesYaml && rawPnpmWorkspacesYaml.packages) {
+            if (Array.isArray(rawPnpmWorkspacesYaml.packages)) {
+                return rawPnpmWorkspacesYaml.packages;
+            }
+        }
+        // By default, all packages of all subdirectories are included.
+        // https://pnpm.io/pnpm-workspace_yaml
+        return ['*'];
     }
     catch (e) {
         throw new InvalidUserInputError('package.json parsing failed with ' + `error ${e.message}`);

@@ -1,17 +1,18 @@
 import fs from 'fs';
 import path from 'path';
-import { Scope, parseManifestFile, LockfileType, getYarnWorkspaces, } from './parsers/index.js';
+import { Scope, parseManifestFile, LockfileType, getYarnWorkspaces, getPnpmWorkspaces, } from './parsers/index.js';
 import { PackageLockParser } from './parsers/package-lock-parser.js';
 import { YarnLockParser } from './parsers/yarn-lock-parser.js';
 import { Yarn2LockParser } from './parsers/yarn2-lock-parser.js';
 import { UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError, } from './errors/index.js';
 import { buildDepGraphFromCliOutput } from './cli-parsers/index.js';
-export { buildDepTree, buildDepTreeFromFiles, buildDepGraphFromCliOutput, getYarnWorkspacesFromFiles, getYarnWorkspaces, Scope, LockfileType, UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError, };
+export { buildDepTree, buildDepTreeFromFiles, buildDepGraphFromCliOutput, getYarnWorkspacesFromFiles, getYarnWorkspaces, getPnpmWorkspaces, Scope, LockfileType, UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError, };
 // Straight to Depgraph Functionality *************
 // ************************************************
-import { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, } from './dep-graph-builders/index.js';
-import { getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, NodeLockfileVersion, } from './utils.js';
-export { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, NodeLockfileVersion, };
+import { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, parsePnpmProject, parsePkgJson, } from './dep-graph-builders/index.js';
+import { getPnpmLockfileParser } from './dep-graph-builders/pnpm/lockfile-parser/index.js';
+import { getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, getPnpmLockfileVersion, NodeLockfileVersion, } from './utils.js';
+export { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, getPnpmLockfileParser, parsePnpmProject, parsePkgJson, getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, getPnpmLockfileVersion, NodeLockfileVersion, };
 // **********************************
 async function buildDepTree(manifestFileContents, lockFileContents, includeDev = false, lockfileType, strictOutOfSync = true, defaultManifestFileName = 'package.json') {
     if (!lockfileType) {

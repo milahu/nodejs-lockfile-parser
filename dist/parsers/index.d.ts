@@ -72,7 +72,8 @@ export declare enum LockfileType {
     npm = "npm",
     npm7 = "npm7",
     yarn = "yarn",
-    yarn2 = "yarn2"
+    yarn2 = "yarn2",
+    pnpm = "pnpm"
 }
 export interface LockfileParser {
     parseLockFile: (lockFileContents: string) => Lockfile;
@@ -88,4 +89,5 @@ export declare function getTopLevelDeps({ targetFile, includeDev, includePeerDep
 }): Dep[];
 export declare function createDepTreeDepFromDep(dep: Dep): DepTreeDep;
 export declare function getYarnWorkspaces(targetFile: string): string[] | false;
+export declare function getPnpmWorkspaces(workspacesYamlFile: string): string[];
 export {};

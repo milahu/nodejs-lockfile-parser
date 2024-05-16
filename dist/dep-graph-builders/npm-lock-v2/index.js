@@ -50,10 +50,10 @@ export const buildDepGraphNpmLockV2 = async (npmLockPkgs, pkgJson, options) => {
         return acc;
     }, new Map());
     const visitedMap = new Set();
-    await dfsVisit(depGraphBuilder, rootNode, visitedMap, npmLockPkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, [], pkgKeysByName);
+    await dfsVisit(depGraphBuilder, rootNode, visitedMap, npmLockPkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, [], pkgKeysByName, pkgJson.overrides);
     return depGraphBuilder.build();
 };
-const dfsVisit = async (depGraphBuilder, node, visitedMap, npmLockPkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, ancestry, pkgKeysByName) => {
+const dfsVisit = async (depGraphBuilder, node, visitedMap, npmLockPkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, ancestry, pkgKeysByName, overrides) => {
     visitedMap.add(node.id);
     for (const [name, depInfo] of Object.entries(node.dependencies || {})) {
         if (eventLoopSpinner.isStarving()) {
@@ -63,26 +63,37 @@ const dfsVisit = async (depGraphBuilder, node, visitedMap, npmLockPkgs, strictOu
             ...ancestry,
             {
                 name: node.name,
+                version: node.version,
                 key: node.key || '',
                 inBundle: node.inBundle || false,
             },
-        ], pkgKeysByName);
+        ], pkgKeysByName, overrides);
         if (!visitedMap.has(childNode.id)) {
             addPkgNodeToGraph(depGraphBuilder, childNode, {});
             await dfsVisit(depGraphBuilder, childNode, visitedMap, npmLockPkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, [
                 ...ancestry,
                 {
                     name: node.name,
+                    version: node.version,
                     key: node.key,
                     inBundle: node.inBundle || false,
                 },
-            ], pkgKeysByName);
+            ], pkgKeysByName, overrides);
         }
         depGraphBuilder.connectDep(node.id, childNode.id);
     }
 };
-const getChildNode = (name, depInfo, pkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, ancestry, pkgKeysByName) => {
-    let childNodeKey = getChildNodeKey(name, depInfo.version, ancestry, pkgs, pkgKeysByName);
+const getChildNode = (name, depInfo, pkgs, strictOutOfSync, includeDevDeps, includeOptionalDeps, ancestry, pkgKeysByName, overrides) => {
+    let version = depInfo.version;
+    const override = overrides &&
+        checkOverrides([...ancestry, { name, version }], overrides);
+    if (override) {
+        version = override;
+    }
+    if (version.startsWith('npm:')) {
+        version = version.split('@').pop() || version;
+    }
+    let childNodeKey = getChildNodeKey(name, version, ancestry, pkgs, pkgKeysByName);
     if (!childNodeKey) {
         if (strictOutOfSync) {
             throw new OutOfSyncError(`${name}@${depInfo.version}`, LockfileType.npm);
@@ -103,7 +114,15 @@ const getChildNode = (name, depInfo, pkgs, strictOutOfSync, includeDevDeps, incl
     }
     let depData = pkgs[childNodeKey];
     const resolvedToWorkspace = () => {
-        const workspacesDeclaration = pkgs['']['workspaces'] || [];
+        // Workspaces can be set as an array, or as an object
+        // { packages: [] }, this can be checked in
+        // https://github.com/npm/map-workspaces/blob/ff82968a3dbb78659fb7febfce4841bf58c514de/lib/index.js#L27-L41
+        if (pkgs['']['workspaces'] === undefined) {
+            return false;
+        }
+        const workspacesDeclaration = Array.isArray(pkgs['']['workspaces']['packages'])
+            ? pkgs['']['workspaces']['packages']
+            : pkgs['']['workspaces'] || [];
         const resolvedPath = depData.resolved || '';
         const fixedResolvedPath = resolvedPath.replace(/\\/g, '/');
         const normalizedWorkspacesDefn = workspacesDeclaration.map((p) => {
@@ -162,9 +181,14 @@ export const getChildNodeKey = (name, version, ancestry, pkgs, pkgKeysByName) =>
         // `node_modules/a/node_modules/b` into ["a", "b"]
         // To do this we remove the first node_modules substring
         // and then split on the rest
-        const candidateAncestry = candidate
-            .replace('node_modules/', '')
-            .split('/node_modules/');
+        const candidateAncestry = (candidate.startsWith('node_modules/')
+            ? candidate.replace('node_modules/', '').split('/node_modules/')
+            : candidate.split('/node_modules/')).map((el) => {
+            if (pkgs[el]) {
+                return pkgs[el].name || el;
+            }
+            return el;
+        });
         // Check the ancestry of the candidate is a subset of
         // the current pkg. If it is not then it can't be a
         // valid key.
@@ -183,20 +207,24 @@ export const getChildNodeKey = (name, version, ancestry, pkgs, pkgKeysByName) =>
             }
         }
         // So now we can check semver to filter out some values
-        const candidatePkgVersion = pkgs[candidate].version;
-        const doesVersionSatisfySemver = semver.satisfies(candidatePkgVersion, version);
-        return doesVersionSatisfySemver;
+        // if our version is valid semver
+        if (semver.validRange(version)) {
+            const candidatePkgVersion = pkgs[candidate].version;
+            const doesVersionSatisfySemver = semver.satisfies(candidatePkgVersion, version);
+            return doesVersionSatisfySemver;
+        }
+        return true;
     });
     if (filteredCandidates.length === 1) {
         return filteredCandidates[0];
     }
-    const ancestry_names = ancestry.map((el) => el.name).concat(name);
-    while (ancestry_names.length > 0) {
-        const possible_key = `node_modules/${ancestry_names.join('/node_modules/')}`;
-        if (pkgs[possible_key]) {
-            return possible_key;
+    const ancestryNames = ancestry.map((el) => el.name).concat(name);
+    while (ancestryNames.length > 0) {
+        const possibleKey = `node_modules/${ancestryNames.join('/node_modules/')}`;
+        if (filteredCandidates.includes(possibleKey)) {
+            return possibleKey;
         }
-        ancestry_names.shift();
+        ancestryNames.shift();
     }
     // Here we go through th eancestry backwards to find the nearest
     // ancestor package
@@ -213,5 +241,66 @@ export const getChildNodeKey = (name, version, ancestry, pkgs, pkgKeysByName) =>
         filteredCandidates = possibleFilteredKeys;
     }
     return undefined;
+};
+const checkOverrides = (ancestry, overrides) => {
+    const ancestryWithoutRoot = ancestry.slice(1);
+    // First traverse into overrides from root down
+    for (const [idx, pkg] of ancestryWithoutRoot.entries()) {
+        // Do we have this in overrides
+        const override = matchOverrideKey(overrides, pkg);
+        // If we dont find current element move down the ancestry
+        if (!override) {
+            continue;
+        }
+        // If we find a string as override we know we found what we want *if*
+        // we are at our root
+        if (idx + 1 === ancestryWithoutRoot.length &&
+            typeof override === 'string') {
+            return override;
+        }
+        // If we don't find a string we might have a dotted reference
+        // we only care about this if we are the final element in the ancestry.
+        if (idx + 1 === ancestryWithoutRoot.length && override['.']) {
+            return override['.'];
+        }
+        // If we don't find a string or a dotted reference we need to recurse
+        // to find the override
+        const recursiveOverride = checkOverrides(ancestryWithoutRoot, override);
+        // If we get a non-undefined result, it is our answer
+        if (recursiveOverride) {
+            return recursiveOverride;
+        }
+    }
+    return;
+};
+// Here we have to match our pkg to
+// possible keys in the overrides object
+export const matchOverrideKey = (overrides, pkg) => {
+    if (overrides[pkg.name]) {
+        return overrides[pkg.name];
+    }
+    const overrideKeysNameToVersions = Object.keys(overrides).reduce((acc, key) => {
+        // Split the key to separate the package name from the version spec
+        const atIndex = key.lastIndexOf('@');
+        const name = key.substring(0, atIndex);
+        const versionSpec = key.substring(atIndex + 1);
+        // Check if the package name already exists in the accumulator
+        if (!acc[name]) {
+            acc[name] = [];
+        }
+        // Add the version spec to the list of versions for this package name
+        acc[name].push(versionSpec);
+        return acc;
+    }, {});
+    const computedOverrides = overrideKeysNameToVersions[pkg.name];
+    if (computedOverrides) {
+        for (const versionSpec of computedOverrides) {
+            const isPkgVersionSubsetOfOverrideSpec = semver.subset(pkg.version, semver.validRange(versionSpec));
+            if (isPkgVersionSubsetOfOverrideSpec) {
+                return overrides[`${pkg.name}@${versionSpec}`];
+            }
+        }
+    }
+    return null;
 };
 //# sourceMappingURL=index.js.map
