@@ -6,6 +6,13 @@ export declare type PackageJsonBase = {
     optionalDependencies?: Record<string, string>;
     peerDependencies?: Record<string, string>;
     resolutions?: Record<string, string>;
+    overrides?: Overrides;
+    pnpm?: {
+        overrides?: Overrides;
+    };
+};
+export declare type Overrides = string | {
+    [key: string]: Overrides;
 };
 export declare type PkgIdentifier = string;
 export declare type NormalisedPkgs = Record<PkgIdentifier, {
@@ -48,6 +55,19 @@ export declare type Yarn1DepGraphBuildOptions = {
     includeDevDeps: boolean;
     includeOptionalDeps: boolean;
     includePeerDeps: boolean;
+    strictOutOfSync: boolean;
+    pruneWithinTopLevelDeps: boolean;
+};
+export declare type PnpmWorkspaceArgs = {
+    isWorkspacePkg: boolean;
+    isRoot: boolean;
+    workspacePath: string;
+    projectsVersionMap: Record<string, string>;
+    rootOverrides: Overrides;
+};
+export declare type PnpmProjectParseOptions = {
+    includeDevDeps: boolean;
+    includeOptionalDeps: boolean;
     strictOutOfSync: boolean;
     pruneWithinTopLevelDeps: boolean;
 };

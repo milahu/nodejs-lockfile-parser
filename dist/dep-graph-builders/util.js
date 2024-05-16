@@ -28,9 +28,9 @@ export const getTopLevelDeps = (pkgJson, options) => {
  * For example, { 'mime-db': '~1.12.0' } will be converted to { 'mime-db': { version: '~1.12.0', isDev: true/false } }.
  */
 export const getGraphDependencies = (dependencies, isDev) => {
-    return Object.entries(dependencies).reduce((acc, [name, semver]) => {
-        acc[name] = { version: semver, isDev: isDev };
-        return acc;
+    return Object.entries(dependencies).reduce((pnpmDeps, [name, semver]) => {
+        pnpmDeps[name] = { version: semver, isDev: isDev };
+        return pnpmDeps;
     }, {});
 };
 export function parsePkgJson(pkgJsonContent) {
