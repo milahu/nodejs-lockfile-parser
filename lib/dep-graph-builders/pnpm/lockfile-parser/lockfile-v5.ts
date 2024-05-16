@@ -1,7 +1,7 @@
 import { parse } from 'dependency-path';
-import { ParsedDepPath, PnpmDeps, PnpmImporters } from '../types';
-import { PnpmLockfileParser } from './lockfile-parser';
-import { PnpmWorkspaceArgs } from '../../types';
+import { ParsedDepPath, PnpmDeps, PnpmImporters } from '../types.js';
+import { PnpmLockfileParser } from './lockfile-parser.js';
+import { PnpmWorkspaceArgs } from '../../types.js';
 
 export class LockfileV5Parser extends PnpmLockfileParser {
   public constructor(rawPnpmLock: any, workspaceArgs?: PnpmWorkspaceArgs) {

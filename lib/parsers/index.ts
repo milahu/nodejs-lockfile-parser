@@ -1,7 +1,7 @@
-import { PackageLock } from './package-lock-parser';
-import { YarnLock } from './yarn-lock-parser';
-import { InvalidUserInputError } from '../errors';
-import { Yarn2Lock } from './yarn2-lock-parser';
+import { PackageLock } from './package-lock-parser.js';
+import { YarnLock } from './yarn-lock-parser.js';
+import { InvalidUserInputError } from '../errors/index.js';
+import { Yarn2Lock } from './yarn2-lock-parser.js';
 import { load, FAILSAFE_SCHEMA } from 'js-yaml';
 
 export interface Dep {

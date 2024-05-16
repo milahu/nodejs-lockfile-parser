@@ -10,10 +10,10 @@ import {
   LockfileType,
   getYarnWorkspaces,
   getPnpmWorkspaces,
-} from './parsers';
-import { PackageLockParser } from './parsers/package-lock-parser';
-import { YarnLockParser } from './parsers/yarn-lock-parser';
-import { Yarn2LockParser } from './parsers/yarn2-lock-parser';
+} from './parsers/index.js';
+import { PackageLockParser } from './parsers/package-lock-parser.js';
+import { YarnLockParser } from './parsers/yarn-lock-parser.js';
+import { Yarn2LockParser } from './parsers/yarn2-lock-parser.js';
 import {
   UnsupportedRuntimeError,
   InvalidUserInputError,
@@ -54,8 +54,8 @@ import {
   parsePnpmProject,
   parsePnpmWorkspace,
   parsePkgJson,
-} from './dep-graph-builders';
-import { getPnpmLockfileParser } from './dep-graph-builders/pnpm/lockfile-parser';
+} from './dep-graph-builders/index.js';
+import { getPnpmLockfileParser } from './dep-graph-builders/pnpm/lockfile-parser/index.js';
 import type {
   PackageJsonBase,
   NormalisedPkgs,

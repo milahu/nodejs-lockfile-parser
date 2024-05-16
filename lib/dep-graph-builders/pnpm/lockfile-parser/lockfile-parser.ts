@@ -1,4 +1,4 @@
-import { PnpmWorkspaceArgs } from '../../types';
+import { PnpmWorkspaceArgs } from '../../types.js';
 import {
   NormalisedPnpmPkg,
   NormalisedPnpmPkgs,
@@ -7,7 +7,7 @@ import {
   PnpmDeps,
   PnpmImporters,
   PnpmLockPkg,
-} from '../types';
+} from '../types.js';
 import { valid } from 'semver';
 import * as pathUtil from 'path';
 import { isEmpty } from 'lodash';

@@ -1,11 +1,11 @@
 import { load, FAILSAFE_SCHEMA } from 'js-yaml';
-import { PnpmLockfileParser } from './lockfile-parser';
-import { LockfileV6Parser } from './lockfile-v6';
-import { LockfileV5Parser } from './lockfile-v5';
-import { LockfileV9Parser } from './lockfile-v9';
-import { PnpmWorkspaceArgs } from '../../types';
+import { PnpmLockfileParser } from './lockfile-parser.js';
+import { LockfileV6Parser } from './lockfile-v6.js';
+import { LockfileV5Parser } from './lockfile-v5.js';
+import { LockfileV9Parser } from './lockfile-v9.js';
+import { PnpmWorkspaceArgs } from '../../types.js';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
-import { NodeLockfileVersion } from '../../../utils';
+import { NodeLockfileVersion } from '../../../utils.js';
 
 export function getPnpmLockfileParser(
   pnpmLockContent: string,

@@ -1,5 +1,5 @@
-import { PnpmWorkspaceArgs } from '../../types';
-import { LockfileV6Parser } from './lockfile-v6';
+import { PnpmWorkspaceArgs } from '../../types.js';
+import { LockfileV6Parser } from './lockfile-v6.js';
 
 const DEFAULT_WORKSPACE_ARGS: PnpmWorkspaceArgs = {
   isWorkspace: true,

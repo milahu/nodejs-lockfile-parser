@@ -1,15 +1,15 @@
 import * as path from 'path';
 import * as fs from 'fs';
-import { LockfileType } from '../..';
-import { getGraphDependencies } from '../util';
-import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser';
-import { NormalisedPnpmPkgs, PnpmNode } from './types';
+import { LockfileType } from '../../index.js';
+import { getGraphDependencies } from '../util.js';
+import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
+import { NormalisedPnpmPkgs, PnpmNode } from './types.js';
 import { valid } from 'semver';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 import {
   INSTALL_COMMAND,
   LOCK_FILE_NAME,
-} from '../../errors/out-of-sync-error';
+} from '../../errors/out-of-sync-error.js';
 
 export const getPnpmChildNode = (
   name: string,

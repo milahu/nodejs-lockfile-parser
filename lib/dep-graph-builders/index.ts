@@ -11,10 +11,10 @@ import {
   buildDepGraphYarnLockV2Simple,
   parseYarnLockV2Project,
   extractPkgsFromYarnLockV2,
-} from './yarn-lock-v2';
-import { parseNpmLockV2Project } from './npm-lock-v2';
-import { parsePnpmProject, parsePnpmWorkspace } from './pnpm';
-import { parsePkgJson } from './util';
+} from './yarn-lock-v2/index.js';
+import { parseNpmLockV2Project } from './npm-lock-v2/index.js';
+import { parsePnpmProject, parsePnpmWorkspace } from './pnpm/index.js';
+import { parsePkgJson } from './util.js';
 
 export {
   parseNpmLockV2Project,

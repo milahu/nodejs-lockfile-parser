@@ -1,11 +1,11 @@
 import { DepGraphBuilder } from '@snyk/dep-graph';
-import { getTopLevelDeps } from '../util';
-import type { Overrides, PnpmProjectParseOptions } from '../types';
-import type { PackageJsonBase } from '../types';
-import { getPnpmChildNode } from './utils';
+import { getTopLevelDeps } from '../util.js';
+import type { Overrides, PnpmProjectParseOptions } from '../types.js';
+import type { PackageJsonBase } from '../types.js';
+import { getPnpmChildNode } from './utils.js';
 import { eventLoopSpinner } from 'event-loop-spinner';
-import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser';
-import { NormalisedPnpmPkgs, PnpmNode } from './types';
+import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
+import { NormalisedPnpmPkgs, PnpmNode } from './types.js';
 
 export const buildDepGraphPnpm = async (
   lockFileParser: PnpmLockfileParser,
