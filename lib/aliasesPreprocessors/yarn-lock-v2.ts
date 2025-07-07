@@ -1,4 +1,4 @@
-import { NormalisedPkgs } from '../dep-graph-builders/types';
+import { NormalisedPkgs } from '../dep-graph-builders/types.js';
 import * as cloneDeep from 'lodash.clonedeep';
 export const rewriteAliasesInYarnLockV2 = (
   pkgJson: string,

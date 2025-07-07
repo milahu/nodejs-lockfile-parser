@@ -1,4 +1,4 @@
-import { NpmLockPkg } from '../dep-graph-builders/npm-lock-v2/extract-npm-lock-v2-pkgs';
+import { NpmLockPkg } from '../dep-graph-builders/npm-lock-v2/extract-npm-lock-v2-pkgs.js';
 
 export const rewriteAliasesInNpmLockV2 = (
   lockfilePackages: Record<string, NpmLockPkg>,

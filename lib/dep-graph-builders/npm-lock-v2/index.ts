@@ -21,8 +21,8 @@ import * as semver from 'semver';
 import * as micromatch from 'micromatch';
 import pathUtil from 'path';
 import { eventLoopSpinner } from 'event-loop-spinner';
-import { rewriteAliasesPkgJson } from '../../aliasesPreprocessors/pkgJson';
-import { rewriteAliasesInNpmLockV2 } from '../../aliasesPreprocessors/npm-lock-v2';
+import { rewriteAliasesPkgJson } from '../../aliasesPreprocessors/pkgJson.js';
+import { rewriteAliasesInNpmLockV2 } from '../../aliasesPreprocessors/npm-lock-v2.js';
 
 export { extractPkgsFromNpmLockV2 };
 

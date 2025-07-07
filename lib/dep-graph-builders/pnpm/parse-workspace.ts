@@ -1,18 +1,18 @@
 import * as debugModule from 'debug';
 import * as path from 'path';
-import { parsePkgJson } from '../util';
+import { parsePkgJson } from '../util.js';
 import {
   PackageJsonBase,
   PnpmProjectParseOptions,
   ScannedNodeProject,
-} from '../types';
-import { buildDepGraphPnpm } from './build-dep-graph-pnpm';
+} from '../types.js';
+import { buildDepGraphPnpm } from './build-dep-graph-pnpm.js';
 import { DepGraph } from '@snyk/dep-graph';
-import { getPnpmLockfileParser } from './lockfile-parser/index';
-import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser';
-import { getPnpmLockfileVersion } from '../../utils';
-import { getFileContents } from './utils';
-import { UNDEFINED_VERSION } from './constants';
+import { getPnpmLockfileParser } from './lockfile-parser/index.js';
+import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
+import { getPnpmLockfileVersion } from '../../utils.js';
+import { getFileContents } from './utils.js';
+import { UNDEFINED_VERSION } from './constants.js';
 
 const debug = debugModule('snyk-pnpm-workspaces');
 

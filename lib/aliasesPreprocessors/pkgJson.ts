@@ -1,4 +1,4 @@
-import { parsePkgJson } from '../dep-graph-builders/util';
+import { parsePkgJson } from '../dep-graph-builders/util.js';
 
 export const rewriteAliasesPkgJson = (packageJsonContent: string): string => {
   const pkgJsonPreprocessed = parsePkgJson(packageJsonContent);
