@@ -11,8 +11,8 @@ export interface PkgNode {
   id: string;
   name: string;
   version: string;
-  resolved: string;
-  integrity: string;
+  resolved?: string;
+  integrity?: string;
   dependencies: Dependencies;
   isDev: boolean;
   missingLockFileEntry?: boolean;
