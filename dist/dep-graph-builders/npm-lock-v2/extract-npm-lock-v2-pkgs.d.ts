@@ -1,4 +1,4 @@
-export declare type NpmLockPkg = {
+export type NpmLockPkg = {
     name?: string;
     version: string;
     dependencies?: Record<string, string>;

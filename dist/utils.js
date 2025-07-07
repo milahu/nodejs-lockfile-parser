@@ -12,7 +12,7 @@ export var NodeLockfileVersion;
     NodeLockfileVersion["PnpmLockV5"] = "PNPM_LOCK_V5";
     NodeLockfileVersion["PnpmLockV6"] = "PNPM_LOCK_V6";
     NodeLockfileVersion["PnpmLockV9"] = "PNPM_LOCK_V9";
-})(NodeLockfileVersion = NodeLockfileVersion || (NodeLockfileVersion = {}));
+})(NodeLockfileVersion || (NodeLockfileVersion = {}));
 export const getLockfileVersionFromFile = (targetFile) => {
     const lockFileContents = readFileSync(targetFile, 'utf-8');
     if (targetFile.endsWith('package-lock.json')) {
@@ -26,7 +26,7 @@ export const getLockfileVersionFromFile = (targetFile) => {
     }
     else {
         throw new InvalidUserInputError(`Unknown lockfile ${targetFile}. ` +
-            'Please provide either package-lock.json or yarn.lock.');
+            'Please provide either package-lock.json, yarn.lock or pnpm-lock.yaml');
     }
 };
 export function getPnpmLockfileVersion(lockFileContents) {

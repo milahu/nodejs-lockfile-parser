@@ -2,8 +2,8 @@ export interface FormattedCliOutput {
     topLevelDeps: string[];
     dependencies: FlatDependenciesMap;
 }
-export declare type FlatDependenciesMap = Map<string, string[]>;
-export declare type YarnInfoOutput = Array<{
+export type FlatDependenciesMap = Map<string, string[]>;
+export type YarnInfoOutput = Array<{
     value: string;
     children: {
         Version: string;

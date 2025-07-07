@@ -9,10 +9,10 @@ export interface Dep {
 interface WorkspacesAlternateConfig {
     packages?: string[];
 }
-export declare type ManifestDependencies = {
+export type ManifestDependencies = {
     [dep: string]: string;
 };
-export declare type PeerDependenciesMeta = {
+export type PeerDependenciesMeta = {
     [dep: string]: {
         optional: boolean;
     };
@@ -79,7 +79,7 @@ export interface LockfileParser {
     parseLockFile: (lockFileContents: string) => Lockfile;
     getDependencyTree: (manifestFile: ManifestFile, lockfile: Lockfile, includeDev?: boolean, strictOutOfSync?: boolean) => Promise<PkgTree>;
 }
-export declare type Lockfile = PackageLock | YarnLock | Yarn2Lock;
+export type Lockfile = PackageLock | YarnLock | Yarn2Lock;
 export declare function parseManifestFile(manifestFileContents: string): ManifestFile;
 export declare function getTopLevelDeps({ targetFile, includeDev, includePeerDeps, applyYarn2Resolutions, }: {
     targetFile: ManifestFile;

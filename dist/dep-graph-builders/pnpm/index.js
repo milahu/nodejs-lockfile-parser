@@ -1,16 +1,5 @@
-import { parsePkgJson } from '../util.js';
-import { buildDepGraphPnpm } from './build-dep-graph-pnpm.js';
-import { getPnpmLockfileParser } from './lockfile-parser/index.js';
-export const parsePnpmProject = async (pkgJsonContent, pnpmLockContent, options, lockfileVersion, workspaceArgs) => {
-    const { includeDevDeps, includeOptionalDeps, strictOutOfSync, pruneWithinTopLevelDeps, } = options;
-    const pkgJson = parsePkgJson(pkgJsonContent);
-    const lockFileParser = getPnpmLockfileParser(pnpmLockContent, lockfileVersion, workspaceArgs);
-    const depgraph = await buildDepGraphPnpm(lockFileParser, pkgJson, {
-        includeDevDeps,
-        strictOutOfSync,
-        includeOptionalDeps,
-        pruneWithinTopLevelDeps,
-    }, workspaceArgs);
-    return depgraph;
-};
+import { parsePnpmProject } from './parse-project.js';
+import { parsePnpmWorkspace } from './parse-workspace.js';
+import { parsePnpmWorkspaceProject } from './parse-workspace-project.js';
+export { parsePnpmProject, parsePnpmWorkspace, parsePnpmWorkspaceProject };
 //# sourceMappingURL=index.js.map

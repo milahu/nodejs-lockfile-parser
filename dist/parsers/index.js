@@ -4,7 +4,7 @@ export var Scope;
 (function (Scope) {
     Scope["prod"] = "prod";
     Scope["dev"] = "dev";
-})(Scope = Scope || (Scope = {}));
+})(Scope || (Scope = {}));
 export var LockfileType;
 (function (LockfileType) {
     LockfileType["npm"] = "npm";
@@ -12,7 +12,7 @@ export var LockfileType;
     LockfileType["yarn"] = "yarn";
     LockfileType["yarn2"] = "yarn2";
     LockfileType["pnpm"] = "pnpm";
-})(LockfileType = LockfileType || (LockfileType = {}));
+})(LockfileType || (LockfileType = {}));
 export function parseManifestFile(manifestFileContents) {
     try {
         return JSON.parse(manifestFileContents);

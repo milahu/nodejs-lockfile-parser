@@ -1,7 +1,7 @@
 import { PackageJsonBase } from './types.js';
 import { DepGraphBuilder } from '@snyk/dep-graph';
 import { NormalisedPkgs } from './types.js';
-export declare type Dependencies = Record<string, {
+export type Dependencies = Record<string, {
     version: string;
     isDev: boolean;
 }>;
@@ -9,8 +9,8 @@ export interface PkgNode {
     id: string;
     name: string;
     version: string;
-    resolved: string;
-    integrity: string;
+    resolved?: string;
+    integrity?: string;
     dependencies: Dependencies;
     isDev: boolean;
     missingLockFileEntry?: boolean;

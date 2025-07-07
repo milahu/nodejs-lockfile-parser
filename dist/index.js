@@ -9,10 +9,12 @@ import { buildDepGraphFromCliOutput } from './cli-parsers/index.js';
 export { buildDepTree, buildDepTreeFromFiles, buildDepGraphFromCliOutput, getYarnWorkspacesFromFiles, getYarnWorkspaces, getPnpmWorkspaces, Scope, LockfileType, UnsupportedRuntimeError, InvalidUserInputError, OutOfSyncError, };
 // Straight to Depgraph Functionality *************
 // ************************************************
-import { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, parsePnpmProject, parsePkgJson, } from './dep-graph-builders/index.js';
+import { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, parsePnpmProject, parsePnpmWorkspace, parsePnpmWorkspaceProject, parsePkgJson, } from './dep-graph-builders/index.js';
 import { getPnpmLockfileParser } from './dep-graph-builders/pnpm/lockfile-parser/index.js';
 import { getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, getPnpmLockfileVersion, NodeLockfileVersion, } from './utils.js';
-export { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, getPnpmLockfileParser, parsePnpmProject, parsePkgJson, getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, getPnpmLockfileVersion, NodeLockfileVersion, };
+import { rewriteAliasesInNpmLockV1 } from './aliasesPreprocessors/npm-lock-v1.js';
+import { rewriteAliasesPkgJson } from './aliasesPreprocessors/pkgJson.js';
+export { parseNpmLockV2Project, extractPkgsFromYarnLockV1, parseYarnLockV1Project, parseYarnLockV1WorkspaceProject, buildDepGraphYarnLockV1SimpleCyclesPruned, buildDepGraphYarnLockV1Simple, buildDepGraphYarnLockV1WorkspaceCyclesPruned, buildDepGraphYarnLockV1Workspace, extractPkgsFromYarnLockV2, parseYarnLockV2Project, buildDepGraphYarnLockV2Simple, getPnpmLockfileParser, parsePnpmProject, parsePnpmWorkspace, parsePnpmWorkspaceProject, parsePkgJson, getLockfileVersionFromFile, getNpmLockfileVersion, getYarnLockfileVersion, getPnpmLockfileVersion, NodeLockfileVersion, };
 // **********************************
 async function buildDepTree(manifestFileContents, lockFileContents, includeDev = false, lockfileType, strictOutOfSync = true, defaultManifestFileName = 'package.json') {
     if (!lockfileType) {
@@ -46,7 +48,7 @@ async function buildDepTree(manifestFileContents, lockFileContents, includeDev =
     const lockFile = lockfileParser.parseLockFile(lockFileContents);
     return lockfileParser.getDependencyTree(manifestFile, lockFile, includeDev, strictOutOfSync);
 }
-async function buildDepTreeFromFiles(root, manifestFilePath, lockFilePath, includeDev = false, strictOutOfSync = true) {
+async function buildDepTreeFromFiles(root, manifestFilePath, lockFilePath, includeDev = false, strictOutOfSync = true, honorAliases) {
     if (!root || !manifestFilePath || !lockFilePath) {
         throw new Error('Missing required parameters for buildDepTreeFromFiles()');
     }
@@ -72,7 +74,11 @@ async function buildDepTreeFromFiles(root, manifestFilePath, lockFilePath, inclu
         throw new InvalidUserInputError(`Unknown lockfile ${lockFilePath}. ` +
             'Please provide either package-lock.json or yarn.lock.');
     }
-    return await buildDepTree(manifestFileContents, lockFileContents, includeDev, lockFileType, strictOutOfSync, manifestFilePath);
+    return await buildDepTree(honorAliases
+        ? rewriteAliasesPkgJson(manifestFileContents)
+        : manifestFileContents, honorAliases
+        ? rewriteAliasesInNpmLockV1(lockFileContents)
+        : lockFileContents, includeDev, lockFileType, strictOutOfSync, manifestFilePath);
 }
 function getYarnWorkspacesFromFiles(root, manifestFilePath) {
     if (!root || !manifestFilePath) {

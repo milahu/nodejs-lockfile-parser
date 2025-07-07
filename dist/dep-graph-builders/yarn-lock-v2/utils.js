@@ -1,7 +1,11 @@
-import _flatMap from 'lodash.flatmap';
+import { structUtils } from '@yarnpkg/core';
+import * as _flatMap from 'lodash.flatmap';
 import { OutOfSyncError } from '../../errors/index.js';
 import { LockfileType } from '../../parsers/index.js';
 import { getGraphDependencies } from '../util.js';
+import * as semver from 'semver';
+import * as debugModule from 'debug';
+const debug = debugModule('snyk-nodejs-plugin');
 const BUILTIN_PLACEHOLDER = 'builtin';
 const MULTIPLE_KEYS_REGEXP = / *, */g;
 const keyNormalizer = (parseDescriptor, parseRange) => (rawDescriptor) => {
@@ -71,20 +75,58 @@ export const yarnLockFileKeyNormalizer = (parseDescriptor, parseRange) => (fullD
     return new Set(_flatMap(allKeys));
 };
 export const getYarnLockV2ChildNode = (name, depInfo, pkgs, strictOutOfSync, includeOptionalDeps, resolutions, parentNode) => {
-    // First check if a resolution would be used
+    // First, check if a resolution would be used
     const resolvedVersionFromResolution = (() => {
-        // First check for scoped then simple
+        // Check for scoped resolution (e.g., "parentPackageName/dependencyName")
         const scopedKey = `${parentNode.name}/${name}`;
         if (resolutions[scopedKey]) {
             return resolutions[scopedKey];
         }
-        else if (resolutions[name]) {
+        // Check for resolutions matching "packageName@versionOrRangeToOverride"
+        for (const resKey in resolutions) {
+            if (Object.prototype.hasOwnProperty.call(resolutions, resKey)) {
+                try {
+                    const descriptor = structUtils.parseDescriptor(resKey);
+                    const resKeyPkgName = structUtils.stringifyIdent(descriptor);
+                    // Check if the resolution key targets the current package name
+                    if (resKeyPkgName === name) {
+                        if (descriptor.range && descriptor.range !== 'unknown') {
+                            // Check if the current dependency's version satisfies the
+                            // version/range specified in the resolution key.
+                            if (semver.satisfies(depInfo.version, descriptor.range)) {
+                                return resolutions[resKey];
+                            }
+                        }
+                    }
+                }
+                catch (e) {
+                    debug(`Error parsing resolution key(${resKey}): ${e}$`);
+                }
+            }
+        }
+        // Check for global resolution by package name (e.g., "packageName": "version")
+        if (resolutions[name]) {
             return resolutions[name];
         }
-        return '';
+        return ''; // No resolution applies
     })();
     if (resolvedVersionFromResolution) {
         const childNodeKeyFromResolution = `${name}@${resolvedVersionFromResolution}`;
+        if (!pkgs[childNodeKeyFromResolution]) {
+            if (strictOutOfSync && !/^file:/.test(resolvedVersionFromResolution)) {
+                throw new OutOfSyncError(childNodeKeyFromResolution, LockfileType.yarn2);
+            }
+            else {
+                return {
+                    id: childNodeKeyFromResolution,
+                    name: name,
+                    version: resolvedVersionFromResolution,
+                    dependencies: {},
+                    isDev: depInfo.isDev,
+                    missingLockFileEntry: true,
+                };
+            }
+        }
         const { version: versionFromResolution, dependencies, optionalDependencies, } = pkgs[childNodeKeyFromResolution];
         const formattedDependencies = getGraphDependencies(dependencies || {}, depInfo.isDev);
         const formattedOptionalDependencies = includeOptionalDeps

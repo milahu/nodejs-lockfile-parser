@@ -1,7 +1,7 @@
 import { PkgIdentifier } from '../types.js';
 import { Dependencies } from '../util.js';
-export declare type PnpmDepPath = string;
-export declare type PnpmLockPkg = {
+export type PnpmDepPath = string;
+export type PnpmLockPkg = {
     name?: string;
     version?: string;
     id?: string;
@@ -19,7 +19,7 @@ export declare type PnpmLockPkg = {
     prepare?: boolean;
     hasBin?: boolean;
 };
-export declare type NormalisedPnpmPkg = {
+export type NormalisedPnpmPkg = {
     name: string;
     version: string;
     id: string;
@@ -27,8 +27,9 @@ export declare type NormalisedPnpmPkg = {
     dependencies: Record<string, string>;
     devDependencies: Record<string, string>;
     optionalDependencies?: Record<string, string>;
+    localWorkspacePackage?: boolean;
 };
-export declare type PnpmNode = {
+export type PnpmNode = {
     name: string;
     version: string;
     id: string;
@@ -37,19 +38,19 @@ export declare type PnpmNode = {
     optionalDependencies?: Dependencies;
     missingLockFileEntry?: boolean;
 };
-export declare type NormalisedPnpmPkgs = Record<PkgIdentifier, NormalisedPnpmPkg>;
-export declare type PnpmDeps = Record<string, {
+export type NormalisedPnpmPkgs = Record<PkgIdentifier, NormalisedPnpmPkg>;
+export type PnpmDeps = Record<string, {
     name: string;
     version: string;
     specifier?: string;
     isDev: boolean;
 }>;
-export declare type ParsedDepPath = {
+export type ParsedDepPath = {
     name?: string;
     version?: string;
 };
-export declare type PnpmWorkspacePath = string;
-export declare type DepName = string;
-export declare type DepVersion = string;
-export declare type PnpmImporter = Record<DepName, DepVersion>;
-export declare type PnpmImporters = Record<PnpmWorkspacePath, Record<DepName, DepVersion>>;
+export type PnpmWorkspacePath = string;
+export type DepName = string;
+export type DepVersion = string;
+export type PnpmImporter = Record<DepName, DepVersion>;
+export type PnpmImporters = Record<PnpmWorkspacePath, Record<DepName, DepVersion>>;

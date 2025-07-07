@@ -5,8 +5,8 @@ export declare class LockfileV6Parser extends PnpmLockfileParser {
     settings: any;
     constructor(rawPnpmLock: any, workspaceArgs?: PnpmWorkspaceArgs);
     parseDepPath(depPath: string): ParsedDepPath;
-    normalizeTopLevelDeps(dependencies: Record<string, Record<string, string>>, isDev: boolean): PnpmDeps;
-    normalizePackagesDeps(dependencies: Record<string, Record<string, string>>, isDev: boolean): Record<string, string>;
+    normalizeTopLevelDeps(dependencies: Record<string, Record<string, string>>, isDev: boolean, importerName?: string): PnpmDeps;
+    normalizePackagesDeps(dependencies: Record<string, Record<string, string>>, isDev: boolean, importerName?: string): Record<string, string>;
     excludeTransPeerDepsVersions(fullVersionStr: string): string;
     static isAbsoluteDepenencyPath(dependencyPath: string): boolean;
     normaliseImporters(rawPnpmLock: any): PnpmImporters;

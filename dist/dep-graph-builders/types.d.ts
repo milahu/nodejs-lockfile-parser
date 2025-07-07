@@ -1,4 +1,5 @@
-export declare type PackageJsonBase = {
+import { DepGraph } from '@snyk/dep-graph';
+export type PackageJsonBase = {
     name: string;
     version: string;
     dependencies?: Record<string, string>;
@@ -11,63 +12,81 @@ export declare type PackageJsonBase = {
         overrides?: Overrides;
     };
 };
-export declare type Overrides = string | {
+export type Overrides = string | {
     [key: string]: Overrides;
 };
-export declare type PkgIdentifier = string;
-export declare type NormalisedPkgs = Record<PkgIdentifier, {
+export type PkgIdentifier = string;
+export type NormalisedPkgs = Record<PkgIdentifier, {
     version: string;
+    resolution?: string;
     dependencies: Record<string, string>;
     optionalDependencies: Record<string, string>;
 }>;
-export declare type DepGraphBuildOptions = {
+export type DepGraphBuildOptions = {
     includeDevDeps: boolean;
     includeOptionalDeps: boolean;
     strictOutOfSync: boolean;
     includePeerDeps?: boolean;
+    pruneNpmStrictOutOfSync?: boolean;
+    honorAliases?: boolean;
 };
-export declare type LockFileParseOptions = {
+export type LockFileParseOptions = {
     includeOptionalDeps: boolean;
 };
-export declare type ProjectParseOptions = DepGraphBuildOptions & LockFileParseOptions & {
+export type ProjectParseOptions = DepGraphBuildOptions & LockFileParseOptions & {
     pruneCycles: boolean;
 };
-export declare type YarnLockV2WorkspaceArgs = {
+export type YarnLockV2WorkspaceArgs = {
     isWorkspacePkg: boolean;
     isRoot: boolean;
     rootResolutions: Record<string, string>;
 };
-export declare type YarnLockV2ProjectParseOptions = {
+export type YarnLockV2ProjectParseOptions = {
     includeDevDeps: boolean;
     includeOptionalDeps: boolean;
     strictOutOfSync: boolean;
     pruneWithinTopLevelDeps: boolean;
+    honorAliases?: boolean;
 };
-export declare type PruneLevel = 'cycles' | 'withinTopLevelDeps' | 'none';
-export declare type YarnLockV1ProjectParseOptions = {
+export type PruneLevel = 'cycles' | 'withinTopLevelDeps' | 'none';
+export type YarnLockV1ProjectParseOptions = {
     includeDevDeps: boolean;
     includeOptionalDeps: boolean;
     includePeerDeps: boolean;
     strictOutOfSync: boolean;
     pruneLevel: PruneLevel;
+    honorAliases?: boolean;
 };
-export declare type Yarn1DepGraphBuildOptions = {
+export type Yarn1DepGraphBuildOptions = {
     includeDevDeps: boolean;
     includeOptionalDeps: boolean;
     includePeerDeps: boolean;
     strictOutOfSync: boolean;
     pruneWithinTopLevelDeps: boolean;
 };
-export declare type PnpmWorkspaceArgs = {
-    isWorkspacePkg: boolean;
-    isRoot: boolean;
-    workspacePath: string;
-    projectsVersionMap: Record<string, string>;
-    rootOverrides: Overrides;
+export type PnpmWorkspaceArgs = {
+    isWorkspace: boolean;
+    projectsVersionMap: Record<string, PnpmProject>;
 };
-export declare type PnpmProjectParseOptions = {
+export type PnpmProject = {
+    name: string;
+    version: string;
+};
+export type PnpmProjectParseOptions = {
     includeDevDeps: boolean;
+    includePeerDeps?: boolean;
     includeOptionalDeps: boolean;
     strictOutOfSync: boolean;
     pruneWithinTopLevelDeps: boolean;
 };
+type NodePkgManagers = 'npm' | 'yarn' | 'pnpm';
+export type ScannedNodeProject = {
+    packageManager: NodePkgManagers;
+    targetFile: string;
+    depGraph: DepGraph;
+    plugin: {
+        name: string;
+        runtime: string;
+    };
+};
+export {};

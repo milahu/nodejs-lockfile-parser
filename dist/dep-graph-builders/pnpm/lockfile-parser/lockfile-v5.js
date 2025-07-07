@@ -2,9 +2,14 @@ import { parse } from 'dependency-path';
 import { PnpmLockfileParser } from './lockfile-parser.js';
 export class LockfileV5Parser extends PnpmLockfileParser {
     constructor(rawPnpmLock, workspaceArgs) {
+        // In case of no dependencies, pnpm@7 (lokfile version 5)
+        // does not create a lockfile at `pnpm install`
+        if (!rawPnpmLock) {
+            rawPnpmLock = {
+                lockfileVersion: '5',
+            };
+        }
         super(rawPnpmLock, workspaceArgs);
-        const depsRoot = this.getRoot(rawPnpmLock);
-        this.specifiers = depsRoot.specifiers;
     }
     parseDepPath(depPath) {
         // The 'dependency-path' parsing package only works for lockfiles v5
@@ -17,21 +22,20 @@ export class LockfileV5Parser extends PnpmLockfileParser {
             version: this.excludeTransPeerDepsVersions(version),
         };
     }
-    normalizeTopLevelDeps(dependencies, isDev) {
+    normalizeTopLevelDeps(dependencies, isDev, importerName) {
         return Object.entries(dependencies).reduce((pnpmDeps, [name, version]) => {
-            version = this.normalizeVersion(name, version, isDev);
+            version = this.normalizeVersion(name, version, isDev, importerName);
             pnpmDeps[name] = {
                 name,
                 version,
                 isDev,
-                specifier: this.specifiers[name],
             };
             return pnpmDeps;
         }, {});
     }
-    normalizePackagesDeps(dependencies, isDev) {
+    normalizePackagesDeps(dependencies, isDev, importerName) {
         return Object.entries(dependencies).reduce((pnpmDeps, [name, version]) => {
-            version = this.normalizeVersion(name, version, isDev);
+            version = this.normalizeVersion(name, version, isDev, importerName);
             pnpmDeps[name] = version;
             return pnpmDeps;
         }, {});
@@ -44,7 +48,16 @@ export class LockfileV5Parser extends PnpmLockfileParser {
     // '/@babel/preset-typescript/7.12.13_@babel+core@7.12.13'
     // https://github.com/pnpm/spec/blob/master/dependency-path.md
     excludeTransPeerDepsVersions(fullVersionStr) {
-        return fullVersionStr.split('_')[0];
+        if (!fullVersionStr.includes('/')) {
+            return fullVersionStr.split('_')[0];
+        }
+        // When dealing with dependency paths, the dependency name can include '_'
+        // so we need to make sure the '_' we split by is after '/'
+        const splitSlashes = fullVersionStr.split('/');
+        const stringAfterLastSlash = splitSlashes[splitSlashes.length - 1];
+        const stringBeforeLastSlash = fullVersionStr.split(stringAfterLastSlash)[0];
+        const stringBetweenLastSlashAndUnderscore = stringAfterLastSlash.split('_')[0];
+        return `${stringBeforeLastSlash}${stringBetweenLastSlashAndUnderscore}`;
     }
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     normaliseImporters(rawPnpmLock) {

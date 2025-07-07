@@ -1,6 +1,6 @@
 import { Dep, Lockfile, LockfileType, ManifestFile, PkgTree } from './index.js';
 import { DepMap, LockParserBase } from './lock-parser-base.js';
-export declare type YarnLockFileTypes = LockfileType.yarn | LockfileType.yarn2;
+export type YarnLockFileTypes = LockfileType.yarn | LockfileType.yarn2;
 export interface YarnLock {
     type: string;
     object: YarnLockDeps;
