@@ -5,7 +5,8 @@ import { eventLoopSpinner } from 'event-loop-spinner';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 import { INSTALL_COMMAND, LOCK_FILE_NAME, } from '../../errors/out-of-sync-error.js';
 import { LockfileType } from '../../index.js';
-import * as debugModule from 'debug';
+import _debugModule from 'debug';
+const debugModule = _debugModule.default || _debugModule;
 import { UNDEFINED_VERSION } from './constants.js';
 const debug = debugModule('snyk-pnpm-workspaces');
 export const buildDepGraphPnpm = async (lockFileParser, pkgJson, options, importer) => {

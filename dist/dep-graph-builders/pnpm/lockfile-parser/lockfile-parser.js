@@ -1,7 +1,8 @@
 import { valid } from 'semver';
 import * as pathUtil from 'path';
 import isEmpty from 'lodash.isempty';
-import * as debugModule from 'debug';
+import _debugModule from 'debug';
+const debugModule = _debugModule.default || _debugModule;
 import { UNDEFINED_VERSION } from '../constants.js';
 const debug = debugModule('snyk-pnpm-workspaces');
 export class PnpmLockfileParser {

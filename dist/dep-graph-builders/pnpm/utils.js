@@ -4,7 +4,8 @@ import { LockfileType } from '../../index.js';
 import { getGraphDependencies } from '../util.js';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 import { INSTALL_COMMAND, LOCK_FILE_NAME, } from '../../errors/out-of-sync-error.js';
-import * as debugModule from 'debug';
+import _debugModule from 'debug';
+const debugModule = _debugModule.default || _debugModule;
 import { UNDEFINED_VERSION } from './constants.js';
 const debug = debugModule('snyk-pnpm-workspaces');
 export const getPnpmChildNode = (name, depInfo, pkgs, strictOutOfSync, includeOptionalDeps, includeDevDeps, lockfileParser) => {
