@@ -18,7 +18,7 @@ import {
   parsePnpmWorkspace,
   parsePnpmWorkspaceProject,
 } from './pnpm/index.js';
-import { parsePkgJson } from './util/index.js';
+import { parsePkgJson } from './util.js';
 
 export {
   parseNpmLockV2Project,
