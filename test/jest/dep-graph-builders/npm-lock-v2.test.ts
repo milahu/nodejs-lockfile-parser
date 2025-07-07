@@ -1,6 +1,11 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
-import { parseNpmLockV2Project } from '../../../lib/';
+import {
+  InvalidUserInputError,
+  LockfileType,
+  OutOfSyncError,
+  parseNpmLockV2Project,
+} from '../../../lib/';
 
 describe('dep-graph-builder npm-lock-v2', () => {
   describe('Happy path tests', () => {
@@ -14,6 +19,7 @@ describe('dep-graph-builder npm-lock-v2', () => {
         'different-versions',
         'local-pkg-without-workspaces',
         'dist-tag-sub-dependency',
+        'bundled-top-level-dep',
       ])('[simple tests] project: %s ', (fixtureName) => {
         it('matches expected', async () => {
           const pkgJsonContent = readFileSync(
@@ -38,7 +44,7 @@ describe('dep-graph-builder npm-lock-v2', () => {
               includeDevDeps: false,
               includeOptionalDeps: true,
               pruneCycles: true,
-              strictOutOfSync: false,
+              strictOutOfSync: true,
             },
           );
 
@@ -397,19 +403,24 @@ describe('dep-graph-builder npm-lock-v2', () => {
         'utf8',
       );
       const npmLockContent = '';
-      try {
-        await parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
+
+      const nodeMajorVersion = parseInt(
+        process.version.substring(1).split('.')[0],
+        10,
+      );
+      const expectedErrorMessage =
+        nodeMajorVersion >= 22
+          ? 'package.json parsing failed with error Expected double-quoted property name in JSON at position 100 (line 6 column 3)'
+          : 'package.json parsing failed with error Unexpected token } in JSON at position 100';
+
+      await expect(
+        parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
           includeDevDeps: false,
           includeOptionalDeps: true,
           pruneCycles: true,
           strictOutOfSync: false,
-        });
-      } catch (err) {
-        expect((err as Error).message).toBe(
-          'package.json parsing failed with error Unexpected token } in JSON at position 100',
-        );
-        expect((err as Error).name).toBe('InvalidUserInputError');
-      }
+        }),
+      ).rejects.toThrow(new InvalidUserInputError(expectedErrorMessage));
     });
 
     it('project: simple-non-top-level-out-of-sync -> throws OutOfSyncError', async () => {
@@ -425,19 +436,38 @@ describe('dep-graph-builder npm-lock-v2', () => {
         ),
         'utf8',
       );
-      try {
-        await parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
+      await expect(
+        parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
           includeDevDeps: false,
           includeOptionalDeps: true,
           pruneCycles: true,
           strictOutOfSync: true,
-        });
-      } catch (err) {
-        expect((err as Error).message).toBe(
-          'Dependency ms@0.6.2 was not found in package-lock.json. Your package.json and package-lock.json are probably out of sync. Please run "npm install" and try again.',
-        );
-        expect((err as Error).name).toBe('OutOfSyncError');
-      }
+        }),
+      ).rejects.toThrow(new OutOfSyncError('ms@0.6.2', LockfileType.npm));
+    });
+
+    it('should throw error on out of sync with prune ff', async () => {
+      const fixtureName = 'simple-out-of-sync';
+      const pkgJsonContent = readFileSync(
+        join(__dirname, `./fixtures/npm-lock-v2/${fixtureName}/package.json`),
+        'utf8',
+      );
+      const npmLockContent = readFileSync(
+        join(
+          __dirname,
+          `./fixtures/npm-lock-v2/${fixtureName}/package-lock.json`,
+        ),
+        'utf8',
+      );
+      await expect(
+        parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
+          includeDevDeps: false,
+          includeOptionalDeps: true,
+          pruneCycles: true,
+          strictOutOfSync: true,
+          pruneNpmStrictOutOfSync: true,
+        }),
+      ).rejects.toThrow(new OutOfSyncError('lodash@4.17.21', LockfileType.npm));
     });
 
     it('project: simple-top-level-out-of-sync -> throws OutOfSyncError', async () => {
@@ -453,19 +483,14 @@ describe('dep-graph-builder npm-lock-v2', () => {
         ),
         'utf8',
       );
-      try {
-        await parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
+      await expect(
+        parseNpmLockV2Project(pkgJsonContent, npmLockContent, {
           includeDevDeps: false,
           includeOptionalDeps: true,
           pruneCycles: true,
           strictOutOfSync: true,
-        });
-      } catch (err) {
-        expect((err as Error).message).toBe(
-          'Dependency lodash@4.17.11 was not found in package-lock.json. Your package.json and package-lock.json are probably out of sync. Please run "npm install" and try again.',
-        );
-        expect((err as Error).name).toBe('OutOfSyncError');
-      }
+        }),
+      ).rejects.toThrow(new OutOfSyncError('lodash@4.17.11', LockfileType.npm));
     });
   });
 });

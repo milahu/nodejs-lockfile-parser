@@ -53,6 +53,7 @@ import {
   buildDepGraphYarnLockV2Simple,
   parsePnpmProject,
   parsePnpmWorkspace,
+  parsePnpmWorkspaceProject,
   parsePkgJson,
 } from './dep-graph-builders/index.js';
 import { getPnpmLockfileParser } from './dep-graph-builders/pnpm/lockfile-parser/index.js';
@@ -69,6 +70,8 @@ import {
   getPnpmLockfileVersion,
   NodeLockfileVersion,
 } from './utils.js';
+import { rewriteAliasesInNpmLockV1 } from './aliasesPreprocessors/npm-lock-v1.js';
+import { rewriteAliasesPkgJson } from './aliasesPreprocessors/pkgJson.js';
 export {
   parseNpmLockV2Project,
   extractPkgsFromYarnLockV1,
@@ -84,6 +87,7 @@ export {
   getPnpmLockfileParser,
   parsePnpmProject,
   parsePnpmWorkspace,
+  parsePnpmWorkspaceProject,
   parsePkgJson,
   PackageJsonBase,
   ProjectParseOptions,
@@ -154,6 +158,7 @@ async function buildDepTreeFromFiles(
   lockFilePath: string,
   includeDev = false,
   strictOutOfSync = true,
+  honorAliases?: boolean,
 ): Promise<PkgTree> {
   if (!root || !manifestFilePath || !lockFilePath) {
     throw new Error('Missing required parameters for buildDepTreeFromFiles()');
@@ -190,8 +195,12 @@ async function buildDepTreeFromFiles(
   }
 
   return await buildDepTree(
-    manifestFileContents,
-    lockFileContents,
+    honorAliases
+      ? rewriteAliasesPkgJson(manifestFileContents)
+      : manifestFileContents,
+    honorAliases
+      ? rewriteAliasesInNpmLockV1(lockFileContents)
+      : lockFileContents,
     includeDev,
     lockFileType,
     strictOutOfSync,

@@ -21,23 +21,39 @@ import * as semver from 'semver';
 import * as micromatch from 'micromatch';
 import pathUtil from 'path';
 import { eventLoopSpinner } from 'event-loop-spinner';
+import { rewriteAliasesPkgJson } from '../../aliasesPreprocessors/pkgJson';
+import { rewriteAliasesInNpmLockV2 } from '../../aliasesPreprocessors/npm-lock-v2';
 
 export { extractPkgsFromNpmLockV2 };
+
+const ROOT_NODE_ID = 'root-node';
 
 export const parseNpmLockV2Project = async (
   pkgJsonContent: string,
   pkgLockContent: string,
   options: ProjectParseOptions,
 ): Promise<DepGraph> => {
-  const { includeDevDeps, strictOutOfSync, includeOptionalDeps } = options;
+  const {
+    includeDevDeps,
+    strictOutOfSync,
+    includeOptionalDeps,
+    pruneNpmStrictOutOfSync,
+  } = options;
 
-  const pkgJson: PackageJsonBase = parsePkgJson(pkgJsonContent);
-  const pkgs = extractPkgsFromNpmLockV2(pkgLockContent);
+  const pkgJson: PackageJsonBase = parsePkgJson(
+    options.honorAliases
+      ? rewriteAliasesPkgJson(pkgJsonContent)
+      : pkgJsonContent,
+  );
+  const pkgs = options.honorAliases
+    ? rewriteAliasesInNpmLockV2(extractPkgsFromNpmLockV2(pkgLockContent))
+    : extractPkgsFromNpmLockV2(pkgLockContent);
 
   const depgraph = await buildDepGraphNpmLockV2(pkgs, pkgJson, {
     includeDevDeps,
     includeOptionalDeps,
     strictOutOfSync,
+    pruneNpmStrictOutOfSync,
   });
 
   return depgraph;
@@ -48,8 +64,12 @@ export const buildDepGraphNpmLockV2 = async (
   pkgJson: PackageJsonBase,
   options: DepGraphBuildOptions,
 ): Promise<DepGraph> => {
-  const { includeDevDeps, strictOutOfSync, includeOptionalDeps } = options;
-
+  const {
+    includeDevDeps,
+    strictOutOfSync,
+    includeOptionalDeps,
+    pruneNpmStrictOutOfSync,
+  } = options;
   const depGraphBuilder = new DepGraphBuilder(
     { name: 'npm' },
     { name: pkgJson.name as string, version: pkgJson.version },
@@ -62,7 +82,7 @@ export const buildDepGraphNpmLockV2 = async (
   });
 
   const rootNode: PkgNode = {
-    id: 'root-node',
+    id: ROOT_NODE_ID,
     name: pkgJson.name,
     version: pkgJson.version,
     resolved: '',
@@ -103,11 +123,13 @@ export const buildDepGraphNpmLockV2 = async (
     [],
     pkgKeysByName,
     pkgJson.overrides,
+    pruneNpmStrictOutOfSync,
   );
   return depGraphBuilder.build();
 };
 
 interface Ancestry {
+  id: string;
   name: string;
   version: string;
   key: string;
@@ -125,6 +147,7 @@ const dfsVisit = async (
   ancestry: Ancestry[],
   pkgKeysByName: Map<string, string[]>,
   overrides: Overrides | undefined,
+  pruneNpmStrictOutOfSync?: boolean,
 ): Promise<void> => {
   visitedMap.add(node.id);
 
@@ -143,6 +166,7 @@ const dfsVisit = async (
       [
         ...ancestry,
         {
+          id: node.id,
           name: node.name,
           version: node.version,
           key: node.key || '',
@@ -151,6 +175,7 @@ const dfsVisit = async (
       ],
       pkgKeysByName,
       overrides,
+      pruneNpmStrictOutOfSync,
     );
 
     if (!visitedMap.has(childNode.id)) {
@@ -166,6 +191,7 @@ const dfsVisit = async (
         [
           ...ancestry,
           {
+            id: node.id,
             name: node.name,
             version: node.version,
             key: node.key as string,
@@ -191,6 +217,7 @@ const getChildNode = (
   ancestry: Ancestry[],
   pkgKeysByName: Map<string, string[]>,
   overrides?: Overrides,
+  pruneNpmStrictOutOfSync?: boolean,
 ) => {
   let version = depInfo.version;
 
@@ -212,6 +239,7 @@ const getChildNode = (
     ancestry,
     pkgs,
     pkgKeysByName,
+    pruneNpmStrictOutOfSync,
   );
 
   if (!childNodeKey) {
@@ -295,9 +323,10 @@ const getChildNode = (
 export const getChildNodeKey = (
   name: string,
   version: string,
-  ancestry: { name: string; key: string; inBundle: boolean }[],
+  ancestry: { id: string; name: string; key: string; inBundle: boolean }[],
   pkgs: Record<string, NpmLockPkg>,
   pkgKeysByName: Map<string, string[]>,
+  pruneNpmStrictOutOfSync?: boolean,
 ): string | undefined => {
   // This is a list of all our possible options for the childKey
   const candidateKeys = pkgKeysByName.get(name);
@@ -309,6 +338,15 @@ export const getChildNodeKey = (
 
   // If we only have one candidate then we just take it
   if (candidateKeys.length === 1) {
+    if (
+      semver.validRange(version) &&
+      pkgs[candidateKeys[0]].version &&
+      !semver.satisfies(pkgs[candidateKeys[0]].version, version) &&
+      pruneNpmStrictOutOfSync
+    ) {
+      //TODO: Add some logs to monitor
+      return undefined;
+    }
     return candidateKeys[0];
   }
   // If we are bundled we assume we are scoped by the bundle root at least
@@ -318,8 +356,8 @@ export const getChildNodeKey = (
     ? ancestry.findIndex((el) => el.inBundle === true) - 1
     : 1;
   const ancestryFromRootOperatingIdx = [
-    ...ancestry.slice(rootOperatingIdx).map((el) => el.name),
-    name,
+    ...ancestry.slice(rootOperatingIdx),
+    { id: `${name}@${version}`, name, version },
   ];
 
   // We filter on a number of cases
@@ -345,7 +383,7 @@ export const getChildNodeKey = (
     // valid key.
     const isCandidateAncestryIsSubsetOfPkgAncestry = candidateAncestry.every(
       (pkg) => {
-        return ancestryFromRootOperatingIdx.includes(pkg);
+        return ancestryFromRootOperatingIdx.find((p) => p.name == pkg);
       },
     );
 
@@ -355,9 +393,9 @@ export const getChildNodeKey = (
 
     // If we are bundled we assume the bundle root is the first value
     // in the candidates scoping
-    if (isBundled) {
+    if (isBundled && ancestryFromRootOperatingIdx[0].id !== ROOT_NODE_ID) {
       const doesBundledPkgShareBundleRoot =
-        candidateAncestry[0] === ancestryFromRootOperatingIdx[0];
+        candidateAncestry[0] === ancestryFromRootOperatingIdx[0].name;
 
       if (doesBundledPkgShareBundleRoot === false) {
         return false;

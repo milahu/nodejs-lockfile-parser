@@ -24,7 +24,7 @@
   "author": "snyk.io",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=10"
+    "node": ">=18"
   },
   "files": [
     "bin",
@@ -32,10 +32,10 @@
   ],
   "homepage": "https://github.com/snyk/nodejs-lockfile-parser#readme",
   "dependencies": {
-    "@snyk/error-catalog-nodejs-public": "^5.16.0",
     "@snyk/dep-graph": "^2.3.0",
+    "@snyk/error-catalog-nodejs-public": "^5.16.0",
     "@snyk/graphlib": "2.1.9-patch.3",
-    "@yarnpkg/core": "^2.4.0",
+    "@yarnpkg/core": "^4.4.1",
     "@yarnpkg/lockfile": "^1.1.0",
     "dependency-path": "^9.2.8",
     "event-loop-spinner": "^2.0.0",
@@ -44,10 +44,10 @@
     "lodash.flatmap": "^4.5.0",
     "lodash.isempty": "^4.4.0",
     "lodash.topairs": "^4.3.0",
-    "micromatch": "^4.0.7",
+    "micromatch": "^4.0.8",
     "p-map": "^4.0.0",
     "semver": "^7.6.0",
-    "snyk-config": "^5.0.0",
+    "snyk-config": "^5.2.0",
     "tslib": "^1.9.3",
     "uuid": "^8.3.0"
   },
@@ -67,7 +67,7 @@
     "ts-jest": "^28.0.8",
     "ts-node": "^8.10.2",
     "tsc-esm-fix": "^2.20.27",
-    "typescript": "4.8.4"
+    "typescript": "^5.4.5"
   },
   "packageManager": "yarn@2.4.1"
 }

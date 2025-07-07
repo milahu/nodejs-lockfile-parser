@@ -1,4 +1,4 @@
-import { PnpmWorkspaceArgs } from '../../types.js';
+import { PnpmProject, PnpmWorkspaceArgs } from '../../types.js';
 import {
   NormalisedPnpmPkg,
   NormalisedPnpmPkgs,
@@ -12,6 +12,7 @@ import { valid } from 'semver';
 import * as pathUtil from 'path';
 import { isEmpty } from 'lodash';
 import * as debugModule from 'debug';
+import { UNDEFINED_VERSION } from '../constants.js';
 
 const debug = debugModule('snyk-pnpm-workspaces');
 
@@ -22,6 +23,7 @@ export abstract class PnpmLockfileParser {
   public extractedPackages: NormalisedPnpmPkgs;
   public importers: PnpmImporters;
   public workspaceArgs?: PnpmWorkspaceArgs;
+  public resolvedPackages: Record<string, PnpmDepPath>;
 
   public constructor(rawPnpmLock: any, workspaceArgs?: PnpmWorkspaceArgs) {
     this.rawPnpmLock = rawPnpmLock;
@@ -29,6 +31,7 @@ export abstract class PnpmLockfileParser {
     this.workspaceArgs = workspaceArgs;
     this.packages = rawPnpmLock.packages || {};
     this.extractedPackages = {};
+    this.resolvedPackages = {};
     this.importers = this.normaliseImporters(rawPnpmLock);
   }
 
@@ -47,6 +50,11 @@ export abstract class PnpmLockfileParser {
         // name and version are optional in version data - if they don't show up in version data, they can be deducted from the dependency path
         const { name, version } = versionData;
         let parsedPath: ParsedDepPath = {};
+
+        // Exclude transitive peer deps from depPath
+        // e.g. '/cdktf-cli@0.20.3(ink@3.2.0)(react@17.0.2)' -> cdktf-cli@0.20.3
+        depPath = this.excludeTransPeerDepsVersions(depPath);
+
         if (!(version && name)) {
           parsedPath = this.parseDepPath(depPath);
         }
@@ -61,6 +69,7 @@ export abstract class PnpmLockfileParser {
           optionalDependencies: versionData.optionalDependencies || {},
         };
         packages[`${pkg.name}@${pkg.version}`] = pkg;
+        this.resolvedPackages[depPath] = `${pkg.name}@${pkg.version}`;
       },
     );
     return packages;
@@ -72,22 +81,22 @@ export abstract class PnpmLockfileParser {
       includeOptionalDeps?: boolean;
       includePeerDeps?: boolean;
     },
-    pkgName: string,
-    pkgVersion: string,
     importer?: string,
   ): PnpmDeps {
     let root = this.rawPnpmLock;
     if (importer) {
+      const { name, version } = this.workspaceArgs?.projectsVersionMap[
+        importer
+      ] as PnpmProject;
       if (
         // Return early because dependencies were already normalized for this importer
         // as part of another's importer dependency and stored in extractedPackages
-        this.extractedPackages[`${pkgName}@${pkgVersion}`] &&
-        !isEmpty(
-          this.extractedPackages[`${pkgName}@${pkgVersion}`].dependencies,
-        )
+        this.extractedPackages[`${name}@${version}`] &&
+        this.extractedPackages[`${name}@${version}`].localWorkspacePackage &&
+        !isEmpty(this.extractedPackages[`${name}@${version}`].dependencies)
       ) {
         return this.normalizedPkgToTopLevel(
-          this.extractedPackages[`${pkgName}@${pkgVersion}`],
+          this.extractedPackages[`${name}@${version}`],
         );
       }
       root = this.rawPnpmLock.importers[importer];
@@ -115,14 +124,18 @@ export abstract class PnpmLockfileParser {
       : {};
 
     if (importer) {
-      this.extractedPackages[`${pkgName}@${pkgVersion}`] = {
-        id: `${pkgName}@${pkgVersion}`,
-        name: pkgName,
-        version: pkgVersion,
+      const { name, version } = this.workspaceArgs?.projectsVersionMap[
+        importer
+      ] as PnpmProject;
+      this.extractedPackages[`${name}@${version}`] = {
+        id: `${name}@${version}`,
+        name: name,
+        version: version,
         dependencies: this.topLevelDepsToNormalizedPkgs(prodDeps),
         devDependencies: this.topLevelDepsToNormalizedPkgs(devDeps),
         optionalDependencies: this.topLevelDepsToNormalizedPkgs(optionalDeps),
         isDev: false,
+        localWorkspacePackage: true,
       };
     }
     return { ...prodDeps, ...devDeps, ...optionalDeps, ...peerDeps };
@@ -142,8 +155,8 @@ export abstract class PnpmLockfileParser {
       (depName) =>
         (topLevel[depName] = {
           name: depName,
-          version: pkg.dependencies[depName],
-          isDev: false,
+          version: pkg.devDependencies[depName],
+          isDev: true,
         }),
     );
     return topLevel;
@@ -213,12 +226,12 @@ export abstract class PnpmLockfileParser {
         debug(
           `Importer ${resolvedPathDep} discovered as a dependency of ${importerName} was not found in the lockfile`,
         );
-        version = 'undefined';
+        version = UNDEFINED_VERSION;
       } else {
         version = mappedProjInfo.version;
       }
       if (!version) {
-        version = 'undefined';
+        version = UNDEFINED_VERSION;
       }
 
       // Stop recursion here if this package was already normalized and stored in extractedPackages
@@ -235,6 +248,7 @@ export abstract class PnpmLockfileParser {
         isDev,
         dependencies: {},
         devDependencies: {},
+        localWorkspacePackage: true,
       };
 
       const subDeps = this.rawPnpmLock.importers[resolvedPathDep] || {
@@ -269,6 +283,7 @@ export abstract class PnpmLockfileParser {
         dependencies: resolvedDeps,
         devDependencies: resolvedDevDeps,
         optionalDependencies: resolvedOptionalDeps,
+        localWorkspacePackage: true,
       };
     }
     return version;

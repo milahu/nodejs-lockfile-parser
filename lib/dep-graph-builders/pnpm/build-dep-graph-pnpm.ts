@@ -6,6 +6,16 @@ import { getPnpmChildNode } from './utils.js';
 import { eventLoopSpinner } from 'event-loop-spinner';
 import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
 import { NormalisedPnpmPkgs, PnpmNode } from './types.js';
+import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
+import {
+  INSTALL_COMMAND,
+  LOCK_FILE_NAME,
+} from '../../errors/out-of-sync-error.js';
+import { LockfileType } from '../../index.js';
+import * as debugModule from 'debug';
+import { UNDEFINED_VERSION } from './constants.js';
+
+const debug = debugModule('snyk-pnpm-workspaces');
 
 export const buildDepGraphPnpm = async (
   lockFileParser: PnpmLockfileParser,
@@ -22,7 +32,7 @@ export const buildDepGraphPnpm = async (
 
   const depGraphBuilder = new DepGraphBuilder(
     { name: 'pnpm' },
-    { name: pkgJson.name, version: pkgJson.version },
+    { name: pkgJson.name, version: pkgJson.version || UNDEFINED_VERSION },
   );
 
   lockFileParser.extractedPackages = lockFileParser.extractPackages();
@@ -33,14 +43,23 @@ export const buildDepGraphPnpm = async (
   const topLevelDeps = getTopLevelDeps(pkgJson, options);
 
   const extractedTopLevelDeps =
-    lockFileParser.extractTopLevelDependencies(
-      options,
-      pkgJson.name,
-      pkgJson.version,
-      importer,
-    ) || {};
+    lockFileParser.extractTopLevelDependencies(options, importer) || {};
 
   for (const name of Object.keys(topLevelDeps)) {
+    if (!extractedTopLevelDeps[name]) {
+      if (!strictOutOfSync) {
+        continue;
+      }
+      const errMessage =
+        `Dependency ${name} was not found in ` +
+        `${LOCK_FILE_NAME[LockfileType.pnpm]}. Your package.json and ` +
+        `${
+          LOCK_FILE_NAME[LockfileType.pnpm]
+        } are probably out of sync. Please run ` +
+        `"${INSTALL_COMMAND[LockfileType.pnpm]}" and try again.`;
+      debug(errMessage);
+      throw new OpenSourceEcosystems.PnpmOutOfSyncError(errMessage);
+    }
     topLevelDeps[name].version = extractedTopLevelDeps[name].version;
   }
 

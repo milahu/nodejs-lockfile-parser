@@ -1,6 +1,8 @@
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { parsePnpmProject } from '../../../lib/dep-graph-builders';
+import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
+import { InvalidUserInputError } from '../../../lib';
 
 describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
   'pnpm dep-graph-builder %s',
@@ -21,6 +23,10 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
           'simple-override',
           'npm-protocol',
           'scoped-override',
+          'alias-sub-dependency',
+          'empty-project',
+          'git-protocol-peer-deps',
+          'codelab-ref-deps',
         ])('[simple tests] project: %s ', (fixtureName) => {
           jest.setTimeout(50 * 1000);
           it('matches expected', async () => {
@@ -31,13 +37,14 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
               ),
               'utf8',
             );
-            const pkgLockContent = readFileSync(
-              join(
-                __dirname,
-                `./fixtures/${lockFileVersionPath}/${fixtureName}/pnpm-lock.yaml`,
-              ),
-              'utf8',
+            const lockfilePath = join(
+              __dirname,
+              `./fixtures/${lockFileVersionPath}/${fixtureName}/pnpm-lock.yaml`,
             );
+            let pkgLockContent: string | undefined = undefined;
+            if (existsSync(lockfilePath)) {
+              pkgLockContent = readFileSync(lockfilePath, 'utf8');
+            }
 
             const newDepGraph = await parsePnpmProject(
               pkgJsonContent,
@@ -45,7 +52,7 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
               {
                 includeDevDeps: false,
                 includeOptionalDeps: false,
-                strictOutOfSync: false,
+                strictOutOfSync: true,
                 pruneWithinTopLevelDeps: false,
               },
             );
@@ -117,6 +124,52 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
           );
         });
       });
+
+      it('correctly resolves dev=false dependencies when a dependency shows up in both peer and dev deps', async () => {
+        const fixtureName = 'duplicate-dev-peer-deps';
+        const pkgJsonContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/package.json`,
+          ),
+          'utf8',
+        );
+        const pkgLockContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/pnpm-lock.yaml`,
+          ),
+          'utf8',
+        );
+
+        const newDepGraph = await parsePnpmProject(
+          pkgJsonContent,
+          pkgLockContent,
+          {
+            includeDevDeps: false,
+            includePeerDeps: true,
+            includeOptionalDeps: true,
+            strictOutOfSync: true,
+            pruneWithinTopLevelDeps: false,
+          },
+        );
+
+        const expectedDepGraphJson = JSON.parse(
+          readFileSync(
+            join(
+              __dirname,
+              `./fixtures/${lockFileVersionPath}/${fixtureName}/expected.json`,
+            ),
+            'utf8',
+          ),
+        );
+
+        expect(
+          Buffer.from(JSON.stringify(newDepGraph)).toString('base64'),
+        ).toBe(
+          Buffer.from(JSON.stringify(expectedDepGraphJson)).toString('base64'),
+        );
+      });
     });
     describe('Unhappy path tests', () => {
       it('project: invalid-pkg-json -> fails as expected', async () => {
@@ -129,19 +182,24 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
           'utf8',
         );
         const pnpmLockContent = '';
-        try {
-          await parsePnpmProject(pkgJsonContent, pnpmLockContent, {
+
+        const nodeMajorVersion = parseInt(
+          process.version.substring(1).split('.')[0],
+          10,
+        );
+        const expectedErrorMessage =
+          nodeMajorVersion >= 22
+            ? 'package.json parsing failed with error Expected double-quoted property name in JSON at position 100 (line 6 column 3)'
+            : 'package.json parsing failed with error Unexpected token } in JSON at position 100';
+
+        await expect(
+          parsePnpmProject(pkgJsonContent, pnpmLockContent, {
             includeDevDeps: false,
             includeOptionalDeps: true,
             pruneWithinTopLevelDeps: true,
             strictOutOfSync: false,
-          });
-        } catch (err) {
-          expect((err as Error).message).toBe(
-            'package.json parsing failed with error Unexpected token } in JSON at position 100',
-          );
-          expect((err as Error).name).toBe('InvalidUserInputError');
-        }
+          }),
+        ).rejects.toThrow(new InvalidUserInputError(expectedErrorMessage));
       });
       it('project: simple-non-top-level-out-of-sync -> throws OutOfSyncError', async () => {
         const fixtureName = 'missing-non-top-level-deps';
@@ -159,19 +217,18 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
           ),
           'utf8',
         );
-        try {
-          await parsePnpmProject(pkgJsonContent, pnpmLockContent, {
+        await expect(
+          parsePnpmProject(pkgJsonContent, pnpmLockContent, {
             includeDevDeps: false,
             includeOptionalDeps: true,
             pruneWithinTopLevelDeps: true,
             strictOutOfSync: true,
-          });
-        } catch (err) {
-          expect((err as Error).message).toBe(
+          }),
+        ).rejects.toThrow(
+          new OpenSourceEcosystems.PnpmOutOfSyncError(
             'Dependency ms@0.6.2 was not found in pnpm-lock.yaml. Your package.json and pnpm-lock.yaml are probably out of sync. Please run "pnpm install" and try again.',
-          );
-          expect((err as Error).name).toBe('OutOfSyncError');
-        }
+          ),
+        );
       });
       it('project: simple-top-level-out-of-sync -> throws OutOfSyncError', async () => {
         const fixtureName = 'missing-top-level-deps';
@@ -189,19 +246,68 @@ describe.each(['pnpm-lock-v5', 'pnpm-lock-v6', 'pnpm-lock-v9'])(
           ),
           'utf8',
         );
-        try {
-          await parsePnpmProject(pkgJsonContent, pnpmLockContent, {
+        await expect(
+          parsePnpmProject(pkgJsonContent, pnpmLockContent, {
             includeDevDeps: false,
             includeOptionalDeps: true,
             pruneWithinTopLevelDeps: true,
             strictOutOfSync: true,
-          });
-        } catch (err) {
-          expect((err as Error).message).toBe(
-            'Dependency lodash@4.17.11 was not found in pnpm-lock.yaml. Your package.json and pnpm-lock.yaml are probably out of sync. Please run "pnpm install" and try again.',
-          );
-          expect((err as Error).name).toBe('OutOfSyncError');
-        }
+          }),
+        ).rejects.toThrow(
+          new OpenSourceEcosystems.PnpmOutOfSyncError(
+            'Dependency lodash was not found in pnpm-lock.yaml. Your package.json and pnpm-lock.yaml are probably out of sync. Please run "pnpm install" and try again.',
+          ),
+        );
+      });
+
+      it('project: simple-non-top-level-out-of-sync does not throws OutOfSyncError for strictOutOfSync=false', async () => {
+        const fixtureName = 'missing-non-top-level-deps';
+        const pkgJsonContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/package.json`,
+          ),
+          'utf8',
+        );
+        const pnpmLockContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/pnpm-lock.yaml`,
+          ),
+          'utf8',
+        );
+        const deGraph = parsePnpmProject(pkgJsonContent, pnpmLockContent, {
+          includeDevDeps: false,
+          includeOptionalDeps: true,
+          pruneWithinTopLevelDeps: true,
+          strictOutOfSync: false,
+        });
+        expect(deGraph).toBeDefined();
+      });
+
+      it('project: simple-top-level-out-of-sync does not throws OutOfSyncError for strictOutOfSync=false', async () => {
+        const fixtureName = 'missing-top-level-deps';
+        const pkgJsonContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/package.json`,
+          ),
+          'utf8',
+        );
+        const pnpmLockContent = readFileSync(
+          join(
+            __dirname,
+            `./fixtures/${lockFileVersionPath}/${fixtureName}/pnpm-lock.yaml`,
+          ),
+          'utf8',
+        );
+        const deGraph = parsePnpmProject(pkgJsonContent, pnpmLockContent, {
+          includeDevDeps: false,
+          includeOptionalDeps: true,
+          pruneWithinTopLevelDeps: true,
+          strictOutOfSync: false,
+        });
+        expect(deGraph).toBeDefined();
       });
     });
   },

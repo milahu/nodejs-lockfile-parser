@@ -24,6 +24,7 @@ export type NormalisedPkgs = Record<
   PkgIdentifier,
   {
     version: string; // This is resolved version
+    resolution?: string;
     dependencies: Record<string, string>;
     optionalDependencies: Record<string, string>;
   }
@@ -34,6 +35,8 @@ export type DepGraphBuildOptions = {
   includeOptionalDeps: boolean;
   strictOutOfSync: boolean;
   includePeerDeps?: boolean;
+  pruneNpmStrictOutOfSync?: boolean;
+  honorAliases?: boolean;
 };
 
 export type LockFileParseOptions = {
@@ -56,6 +59,7 @@ export type YarnLockV2ProjectParseOptions = {
   includeOptionalDeps: boolean;
   strictOutOfSync: boolean;
   pruneWithinTopLevelDeps: boolean;
+  honorAliases?: boolean;
 };
 
 /*
@@ -72,6 +76,7 @@ export type YarnLockV1ProjectParseOptions = {
   includePeerDeps: boolean;
   strictOutOfSync: boolean;
   pruneLevel: PruneLevel;
+  honorAliases?: boolean;
 };
 
 export type Yarn1DepGraphBuildOptions = {

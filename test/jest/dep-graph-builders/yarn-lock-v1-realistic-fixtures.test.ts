@@ -1,7 +1,12 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
 import { createFromJSON } from '@snyk/dep-graph';
-import { parseYarnLockV1Project } from '../../../lib';
+import {
+  InvalidUserInputError,
+  LockfileType,
+  OutOfSyncError,
+  parseYarnLockV1Project,
+} from '../../../lib';
 
 describe('yarn.lock v1 "real projects"', () => {
   describe('Expected Result tests', () => {
@@ -306,20 +311,25 @@ describe('Unhappy path tests', () => {
       'utf8',
     );
     const yarnLockContent = '';
-    try {
-      await parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
+
+    const nodeMajorVersion = parseInt(
+      process.version.substring(1).split('.')[0],
+      10,
+    );
+    const expectedErrorMessage =
+      nodeMajorVersion >= 22
+        ? 'package.json parsing failed with error Expected double-quoted property name in JSON at position 100 (line 6 column 3)'
+        : 'package.json parsing failed with error Unexpected token } in JSON at position 100';
+
+    await expect(
+      parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
         includeDevDeps: false,
         includeOptionalDeps: true,
         includePeerDeps: false,
         pruneLevel: 'cycles',
         strictOutOfSync: false,
-      });
-    } catch (err) {
-      expect((err as Error).message).toBe(
-        'package.json parsing failed with error Unexpected token } in JSON at position 100',
-      );
-      expect((err as Error).name).toBe('InvalidUserInputError');
-    }
+      }),
+    ).rejects.toThrow(new InvalidUserInputError(expectedErrorMessage));
   });
 
   it('project: simple-top-level-out-of-sync -> throws OutOfSyncError', async () => {
@@ -338,20 +348,15 @@ describe('Unhappy path tests', () => {
       ),
       'utf8',
     );
-    try {
-      await parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
+    await expect(
+      parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
         includeDevDeps: false,
         includeOptionalDeps: true,
         includePeerDeps: false,
         pruneLevel: 'cycles',
         strictOutOfSync: true,
-      });
-    } catch (err) {
-      expect((err as Error).message).toBe(
-        'Dependency lodash@4.17.11 was not found in yarn.lock. Your package.json and yarn.lock are probably out of sync. Please run "yarn install" and try again.',
-      );
-      expect((err as Error).name).toBe('OutOfSyncError');
-    }
+      }),
+    ).rejects.toThrow(new OutOfSyncError('lodash@4.17.11', LockfileType.yarn));
   });
 
   it('project: simple-non-top-level-out-of-sync -> throws OutOfSyncError', async () => {
@@ -370,19 +375,14 @@ describe('Unhappy path tests', () => {
       ),
       'utf8',
     );
-    try {
-      await parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
+    await expect(
+      parseYarnLockV1Project(pkgJsonContent, yarnLockContent, {
         includeDevDeps: false,
         includeOptionalDeps: true,
         includePeerDeps: false,
         pruneLevel: 'cycles',
         strictOutOfSync: true,
-      });
-    } catch (err) {
-      expect((err as Error).message).toBe(
-        'Dependency ms@0.6.2 was not found in yarn.lock. Your package.json and yarn.lock are probably out of sync. Please run "yarn install" and try again.',
-      );
-      expect((err as Error).name).toBe('OutOfSyncError');
-    }
+      }),
+    ).rejects.toThrow(new OutOfSyncError('ms@0.6.2', LockfileType.yarn));
   });
 });

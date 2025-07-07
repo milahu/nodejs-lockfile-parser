@@ -4,13 +4,15 @@ import { LockfileType } from '../../index.js';
 import { getGraphDependencies } from '../util.js';
 import { PnpmLockfileParser } from './lockfile-parser/lockfile-parser.js';
 import { NormalisedPnpmPkgs, PnpmNode } from './types.js';
-import { valid } from 'semver';
 import { OpenSourceEcosystems } from '@snyk/error-catalog-nodejs-public';
 import {
   INSTALL_COMMAND,
   LOCK_FILE_NAME,
 } from '../../errors/out-of-sync-error.js';
+import * as debugModule from 'debug';
+import { UNDEFINED_VERSION } from './constants.js';
 
+const debug = debugModule('snyk-pnpm-workspaces');
 export const getPnpmChildNode = (
   name: string,
   depInfo: { version: string; isDev: boolean },
@@ -20,21 +22,19 @@ export const getPnpmChildNode = (
   includeDevDeps: boolean,
   lockfileParser: PnpmLockfileParser,
 ): PnpmNode => {
-  const resolvedVersion =
-    valid(depInfo.version) || depInfo.version === undefined
-      ? depInfo.version
-      : lockfileParser.excludeTransPeerDepsVersions(depInfo.version);
-  const childNodeKey = `${name}@${resolvedVersion}`;
+  const resolvedVersion = lockfileParser.excludeTransPeerDepsVersions(
+    depInfo.version,
+  );
+  let childNodeKey = `${name}@${resolvedVersion}`;
+  // For aliases, the version is the dependency path that
+  // shows up in the packages section of lockfiles
+  if (lockfileParser.resolvedPackages[resolvedVersion]) {
+    childNodeKey = lockfileParser.resolvedPackages[resolvedVersion];
+  }
+  if (lockfileParser.resolvedPackages[childNodeKey]) {
+    childNodeKey = lockfileParser.resolvedPackages[childNodeKey];
+  }
   if (!pkgs[childNodeKey]) {
-    if (lockfileParser.isWorkspaceLockfile()) {
-      return {
-        id: childNodeKey,
-        name: name,
-        version: resolvedVersion,
-        dependencies: {},
-        isDev: depInfo.isDev,
-      };
-    }
     if (strictOutOfSync && !/^file:/.test(depInfo.version)) {
       const errMessage =
         `Dependency ${childNodeKey} was not found in ` +
@@ -43,12 +43,13 @@ export const getPnpmChildNode = (
           LOCK_FILE_NAME[LockfileType.pnpm]
         } are probably out of sync. Please run ` +
         `"${INSTALL_COMMAND[LockfileType.pnpm]}" and try again.`;
+      debug(errMessage);
       throw new OpenSourceEcosystems.PnpmOutOfSyncError(errMessage);
     } else {
       return {
         id: childNodeKey,
         name: name,
-        version: resolvedVersion,
+        version: resolvedVersion || UNDEFINED_VERSION,
         dependencies: {},
         isDev: depInfo.isDev,
         missingLockFileEntry: true,
@@ -67,9 +68,9 @@ export const getPnpmChildNode = (
       ? getGraphDependencies(depData.optionalDependencies || {}, depInfo.isDev)
       : {};
     return {
-      id: `${name}@${depData.version}`,
-      name: name,
-      version: resolvedVersion,
+      id: `${depData.name}@${depData.version}`,
+      name: depData.name,
+      version: depData.version || UNDEFINED_VERSION,
       dependencies: {
         ...dependencies,
         ...optionalDependencies,
