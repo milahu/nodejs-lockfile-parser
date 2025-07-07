@@ -5,7 +5,8 @@ import { LockfileType } from '../../parsers/index.js';
 import { NormalisedPkgs } from '../types.js';
 import { getGraphDependencies, PkgNode } from '../util.js';
 import * as semver from 'semver';
-import * as debugModule from 'debug';
+import _debugModule from 'debug';
+const debugModule = _debugModule.default || _debugModule;
 
 const debug = debugModule('snyk-nodejs-plugin');
 

@@ -1,4 +1,5 @@
-import * as debugModule from 'debug';
+import _debugModule from 'debug';
+const debugModule = _debugModule.default || _debugModule;
 import * as path from 'path';
 import { parsePkgJson } from '../util.js';
 import {
